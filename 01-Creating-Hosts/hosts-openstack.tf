@@ -9,9 +9,9 @@ terraform {
 }
 
 provider "aws" {
-    region = "us-east-1"
-    shared_credentials_file = "/home/hailson.junior/.aws/credentials"
-    profile = "Terraform"
+    region = var.aws_region
+    shared_credentials_file = var.aws_credential
+    profile = var.aws_profile
 }
 
 resource "aws_instance" "controller" {
@@ -101,7 +101,7 @@ resource "aws_instance" "object_storage_2" {
 
 resource "aws_key_pair" "key_openstack" {
     key_name = "key_openstack"
-    public_key = "${file("/home/hailson.junior/.ssh/id_rsa.pub")}"
+    public_key = "${file("/home/$USER/.ssh/id_rsa.pub")}"
 }
 
 ## Descomente caso o security group não tenha sido criado
@@ -113,7 +113,7 @@ resource "aws_key_pair" "key_openstack" {
 #        from_port = 22
 #        to_port = 22
 #        protocol = "tcp"
-#        cidr_blocks = ["172.31.93.181/32"]
+#        cidr_blocks = ["IP-SERVER/32"]
 #    }
 #    egress {
 #        from_port = 0
