@@ -99,9 +99,10 @@ resource "aws_instance" "object_storage_2" {
     }
 }
 
+# Altere o caminho da chave pública de acordo com o usuário
 resource "aws_key_pair" "key_openstack" {
     key_name = "key_openstack"
-    public_key = "${file("/home/$USER/.ssh/id_rsa.pub")}"
+    public_key = "${file("/home/hailson.junior/.ssh/id_rsa.pub")}"
 }
 
 #
