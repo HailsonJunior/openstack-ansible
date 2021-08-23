@@ -104,8 +104,10 @@ resource "aws_key_pair" "key_openstack" {
     public_key = "${file("/home/$USER/.ssh/id_rsa.pub")}"
 }
 
+#
 ## Descomente caso o security group não tenha sido criado
-## Lembre-se que a máquina pela qual estamos criando os hosts do OpenStack, para acessaá-los, deve estar no mesmo security group
+## O security group deve ser o mesmo do host pelo qual estamos criando os hosts do OpenStack
+## Lembre-se de liberar acesso entre as máquinas no security group
 #
 #resource "aws_security_group" "Iac_group" {
 #    name = "Iac_group"
