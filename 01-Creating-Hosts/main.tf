@@ -9,6 +9,7 @@ terraform {
 
     # Após criar o bucket s3, descomente o módulo abaixo para criar buckup do state
     # Ajuste o profile
+    #
     #backend "s3" {
     #    bucket = "OpenStack_Bucket"
     #    key = "instances-openstack-state/terraform.tfstate"

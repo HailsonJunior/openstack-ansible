@@ -35,19 +35,3 @@ resource "aws_key_pair" "key_openstack" {
 #        cidr_blocks = ["0.0.0.0/0"]
 #    }
 #}
-
-output "private_ip" {
-    value = [aws_instance.controller.private_ip,
-            aws_instance.compute.private_ip,
-            aws_instance.block_storage_1.private_ip,
-            aws_instance.object_storage_1.private_ip,
-            aws_instance.object_storage_2.private_ip]
-}
-
-output "public_dns_controller" {
-    value = [aws_instance.controller.public_dns,
-            aws_instance.compute.public_dns,
-            aws_instance.block_storage_1.public_dns,
-            aws_instance.object_storage_1.public_dns,
-            aws_instance.object_storage_2.public_dns]
-}
