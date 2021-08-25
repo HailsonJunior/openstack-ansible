@@ -1,4 +1,4 @@
-resource "aws_s3_bucket" "${var.hjopenstackbucket}" {
+resource "aws_s3_bucket" "hjopenstackbucket" {
   bucket = "hjopenstackbucket"
   acl = "private"
 
