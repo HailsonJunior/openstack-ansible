@@ -1,19 +1,3 @@
-terraform {
-    required_providers {
-        aws = {
-            source = "hashicorp/aws"
-            version = "~> 3.27"
-        }
-    }
-    required_version = ">= 0.14.9"
-}
-
-provider "aws" {
-    region = var.aws_region
-    shared_credentials_file = var.aws_credential
-    profile = var.aws_profile
-}
-
 resource "aws_instance" "controller" {
     ami = "ami-0cb5f8e033cfa84d2"
     instance_type = "t2.micro"
