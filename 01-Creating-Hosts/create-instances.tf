@@ -1,6 +1,6 @@
 resource "aws_instance" "controller" {
     ami = "ami-0cb5f8e033cfa84d2"
-    instance_type = "t2.large"
+    instance_type = "t2.micro"
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]
      
