@@ -6,6 +6,14 @@ terraform {
         }
     }
     required_version = ">= 0.14.9"
+
+    # Ajuste o profile
+    backend "s3" {
+        bucket = "OpenStack_Bucket"
+        key = "instances-openstack-state/terraform.tfstate"
+        region = us-east-1
+        profile = "Terraform"  
+    }
 }
 
 provider "aws" {
@@ -14,10 +22,3 @@ provider "aws" {
     profile = var.aws_profile
 }
 
-# Ajuste o profile
-backend "s3" {
-  bucket = "OpenStack_Bucket"
-  key = "instances-openstack-state/terraform.tfstate"
-  region = us-east-1
-  profile = "Terraform"  
-}
