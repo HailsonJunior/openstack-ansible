@@ -1,85 +1,11 @@
 resource "aws_instance" "controller" {
     ami = "ami-0cb5f8e033cfa84d2"
-    instance_type = "t2.micro"
+    instance_type = "t2.large"
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]
-    
-    root_block_device {
-        volume_size = 30
-        volume_type = "gp2"
-        delete_on_termination = true
-    }
      
     tags = {
-        Name = "Controller Node 1"
-    }
-}
-
-resource "aws_instance" "compute" {
-    ami = "ami-0cb5f8e033cfa84d2"
-    instance_type = "t2.micro"
-    key_name = "${aws_key_pair.key_openstack.key_name}"
-    security_groups = ["Iac_group"]
-    
-    root_block_device {
-        volume_size = 30
-        volume_type = "gp2"
-        delete_on_termination = true
-    }
-     
-    tags = {
-        Name = "Compute Node 1"
-    }
-}
-
-resource "aws_instance" "block_storage_1" {
-    ami = "ami-0cb5f8e033cfa84d2"
-    instance_type = "t2.micro"
-    key_name = "${aws_key_pair.key_openstack.key_name}"
-    security_groups = ["Iac_group"]
-    
-    root_block_device {
-        volume_size = 30
-        volume_type = "gp2"
-        delete_on_termination = true
-    }
-     
-    tags = {
-        Name = "Block Storage Node 1"
-    }
-}
-
-resource "aws_instance" "object_storage_1" {
-    ami = "ami-0cb5f8e033cfa84d2"
-    instance_type = "t2.micro"
-    key_name = "${aws_key_pair.key_openstack.key_name}"
-    security_groups = ["Iac_group"]
-    
-    root_block_device {
-        volume_size = 30
-        volume_type = "gp2"
-        delete_on_termination = true
-    }
-     
-    tags = {
-        Name = "Object Storage Node 1"
-    }
-}
-
-resource "aws_instance" "object_storage_2" {
-    ami = "ami-0cb5f8e033cfa84d2"
-    instance_type = "t2.micro"
-    key_name = "${aws_key_pair.key_openstack.key_name}"
-    security_groups = ["Iac_group"]
-    
-    root_block_device {
-        volume_size = 30
-        volume_type = "gp2"
-        delete_on_termination = true
-    }
-     
-    tags = {
-        Name = "Object Storage Node 2"
+        Name = "Teste instancia"
     }
 }
 
