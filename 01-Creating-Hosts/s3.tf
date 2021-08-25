@@ -1,4 +1,4 @@
-resource "aws_s3_bucket" "OpenStack_Bucket" {
+resource "aws_s3_bucket" "openStackbucket" {
   bucket = "OpenStack_Bucket"
   acl = "private"
 
