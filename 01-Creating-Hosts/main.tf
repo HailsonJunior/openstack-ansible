@@ -11,7 +11,7 @@ terraform {
     backend "s3" {
         bucket = "OpenStack_Bucket"
         key = "instances-openstack-state/terraform.tfstate"
-        region = us-east-1
+        region = "us-east-1"
         profile = "Terraform"  
     }
 }
