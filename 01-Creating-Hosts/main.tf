@@ -11,7 +11,7 @@ terraform {
     # Ajuste o profile
     #
     #backend "s3" {
-    #    bucket = "OpenStack_Bucket"
+    #    bucket = "hjopenstackbucket"
     #    key = "instances-openstack-state/terraform.tfstate"
     #    region = "us-east-1"
     #    profile = "Terraform"  
