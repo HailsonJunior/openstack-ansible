@@ -1,5 +1,5 @@
-resource "aws_s3_bucket" "hjopenStackbucket" {
-  bucket = "hjopenStackbucket"
+resource "aws_s3_bucket" "hjopenstackbucket" {
+  bucket = "hjopenstackbucket"
   acl = "private"
 
   tags = {
