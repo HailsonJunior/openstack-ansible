@@ -1,4 +1,4 @@
-resource "aws_instance" "controller" {
+resource "aws_instance" "openstack_hosts" {
     for_each = {
         controller = {
             name = "Controller"
