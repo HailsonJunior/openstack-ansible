@@ -30,6 +30,9 @@ provider "aws" {
 
 module "bucket" {
     source = "./s3"
+    versioning = {
+        enabled = true
+    }
 }
 
 module "instances" {

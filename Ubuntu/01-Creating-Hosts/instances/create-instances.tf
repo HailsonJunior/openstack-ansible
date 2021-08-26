@@ -10,7 +10,7 @@ resource "aws_instance" "openstack_hosts" {
     }
 
     instance_type = "t2.micro"
-    ami = data.aws_ami.ubuntu.id
+    ami = "ami-0cb5f8e033cfa84d2"
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]
 
