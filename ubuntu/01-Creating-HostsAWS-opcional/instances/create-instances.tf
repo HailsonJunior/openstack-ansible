@@ -60,11 +60,3 @@ resource "aws_key_pair" "key_openstack" {
     key_name = "key_openstack"
     public_key = "${file("/home/hailson.junior/.ssh/id_rsa.pub")}" # Altere o caminho da chave pública de acordo com o usuário
 }
-
-output "private_ip" {
-    value = [aws_instance.openstack_hosts_medium.controller.private_ip]
-}
-
-output "public_dns_controller" {
-    value = [aws_instance.openstack_hosts_medium.controller.public_dns]
-}
