@@ -62,9 +62,9 @@ resource "aws_key_pair" "key_openstack" {
 }
 
 output "private_ip" {
-    value = [aws_instance.openstack_hosts_medium.private_ip]
+    value = [aws_instance.openstack_hosts_medium.controller.private_ip]
 }
 
 output "public_dns_controller" {
-    value = [aws_instance.openstack_hosts_large.public_dns]
+    value = [aws_instance.openstack_hosts_medium.controller.public_dns]
 }
