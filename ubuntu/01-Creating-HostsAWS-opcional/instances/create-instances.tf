@@ -1,10 +1,10 @@
 resource "aws_instance" "openstack_hosts_large" {
     for_each = {
-        controller = {
+        node1 = {
             name = "Controller"
             
         }
-        compute = {
+        node2 = {
             name = "Compute"
         }
     }
@@ -28,14 +28,14 @@ resource "aws_instance" "openstack_hosts_large" {
 
 resource "aws_instance" "openstack_hosts_medium" {
     for_each = {
-        block_storage_1 = {
+        node3 = {
             name = "Block Storage Node 1"
             
         }
-        object_storage_1 = {
+        node4 = {
             name = "Object Storage Node 1"
         }
-        object_storage_2 = {
+        node5 = {
             name = "Object Storage Node 2"
         }
     }
@@ -59,4 +59,20 @@ resource "aws_instance" "openstack_hosts_medium" {
 resource "aws_key_pair" "key_openstack" {
     key_name = "key_openstack"
     public_key = "${file("/home/hailson.junior/.ssh/id_rsa.pub")}" # Altere o caminho da chave pública de acordo com o usuário
+}
+
+output "private_ip" {
+    value = [aws_instance.controller.private_ip,
+            aws_instance.compute.private_ip,
+            aws_instance.block_storage_1.private_ip,
+            aws_instance.object_storage_1.private_ip,
+            aws_instance.object_storage_2.private_ip]
+}
+
+output "public_dns_controller" {
+    value = [aws_instance.controller.public_dns,
+            aws_instance.compute.public_dns,
+            aws_instance.block_storage_1.public_dns,
+            aws_instance.object_storage_1.public_dns,
+            aws_instance.object_storage_2.public_dns]
 }
