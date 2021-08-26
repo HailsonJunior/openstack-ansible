@@ -1,5 +1,5 @@
 ## Descomente o módulo abaixo caso o security group não tenha sido criado
-## O security group deve ser o mesmo do host pelo qual estamos criando os hosts do OpenStack
+## Utilize também caso a máquina em que está utilizando o Terraform não esteja na AWS
 ## Lembre-se de liberar acesso entre as máquinas no security group
 
 #resource "aws_security_group" "mygroup" {
