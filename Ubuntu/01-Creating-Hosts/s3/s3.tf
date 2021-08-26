@@ -1,5 +1,5 @@
-resource "aws_s3_bucket" "hjopenstackbucket" {
-  bucket = "hjopenstackbucket"
+resource "aws_s3_bucket" "openstackbucket" {
+  bucket = var.bucket_name 
   acl = "private"
 
   versioning {
@@ -8,6 +8,5 @@ resource "aws_s3_bucket" "hjopenstackbucket" {
 
   tags = {
       Name = "OpenStack_Bucket"
-      Environment = "Prod"
   }
 }
