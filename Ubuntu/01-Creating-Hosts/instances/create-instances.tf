@@ -2,14 +2,14 @@ resource "aws_instance" "openstack_hosts" {
     for_each = {
         controller = {
             name = "Controller"
-            instance_type = "t2.micro"
+            
         }
         storage = {
             name = "Storage"
-            instance_type = "t2.micro"
         }
     }
 
+    instance_type = "t2.micro"
     ami = data.aws_ami.ubuntu.id
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]

@@ -34,6 +34,5 @@ module "bucket" {
 
 module "instances" {
     source = "./instances"
-    instance_type = "t2.micro"
 }
 
