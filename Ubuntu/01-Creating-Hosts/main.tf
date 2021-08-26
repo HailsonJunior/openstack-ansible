@@ -28,11 +28,8 @@ provider "aws" {
 #    source = "./security_group"
 #}
 
-module "bucket" {
+module "s3" {
     source = "./s3"
-    versioning = {
-        enabled = true
-    }
 }
 
 module "instances" {
