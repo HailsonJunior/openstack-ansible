@@ -1,4 +1,5 @@
-# OpenStack-Ansible-P-Deploy
-Project to implement OpenStack for production with Ansible
+# Instalação OpenStack com Ansible
 
-Working... not ready yet
+Projeto para implementação do OpenStack para produção com ansible.
+
+Ainda não está pronto...
