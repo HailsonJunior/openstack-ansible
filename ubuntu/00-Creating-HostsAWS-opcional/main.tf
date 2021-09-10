@@ -23,10 +23,11 @@ terraform {
 provider "aws" {
     region = var.aws_region
 #    shared_credentials_file = var.aws_credential
-    profile = var.aws_profile
+#    profile = var.aws_profile
 }
 
 # Descomente caso seja necessário criar um security group
+#
 # module "security_group" {
 #    source = "./security_group"
 #}
