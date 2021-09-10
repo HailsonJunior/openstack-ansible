@@ -9,7 +9,7 @@ resource "aws_vpc" "openstack-vpc" {
 resource "aws_subnet" "openstack-subnet" {
     vpc_id = aws_vpc.openstack-vpc
     cidr_block = "10.0.0.0/20"
-    availability_zone = "us-east-1a"  
+    availability_zone = var.aws_region_vpc  
 
     tags = {
       "Name" = "openstack-subnet"
@@ -73,8 +73,8 @@ resource "aws_instance" "controller" {
     }
 
     root_block_device {
-        volume_size = block_size
-        volume_type = block_type
+        volume_size = var.block_size
+        volume_type = var.block_type
         delete_on_termination = true
     }
 
@@ -91,8 +91,8 @@ resource "aws_instance" "compute" {
     security_groups = ["Iac_group"]
 
     root_block_device {
-        volume_size = block_size
-        volume_type = block_type
+        volume_size = var.block_size
+        volume_type = var.block_type
         delete_on_termination = true
     }
 
@@ -109,8 +109,8 @@ resource "aws_instance" "block1" {
     security_groups = ["Iac_group"]
 
     root_block_device {
-        volume_size = block_size
-        volume_type = block_type
+        volume_size = var.block_size
+        volume_type = var.block_type
         delete_on_termination = true
     }
 
@@ -127,8 +127,8 @@ resource "aws_instance" "object1" {
     security_groups = ["Iac_group"]
 
     root_block_device {
-        volume_size = block_size
-        volume_type = block_type
+        volume_size = var.block_size
+        volume_type = var.block_type
         delete_on_termination = true
     }
 
@@ -145,8 +145,8 @@ resource "aws_instance" "object2" {
     security_groups = ["Iac_group"]
 
     root_block_device {
-        volume_size = block_size
-        volume_type = block_type
+        volume_size = var.block_size
+        volume_type = var.block_type
         delete_on_termination = true
     }
 
