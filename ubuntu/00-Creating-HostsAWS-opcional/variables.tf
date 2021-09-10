@@ -3,13 +3,13 @@ variable "aws_region" {
     description = "Região do privider AWS"
 }
 
-variable "aws_credential" {
-    type = string
-    description = "AWS credentials"
-}
+# variable "aws_credential" {
+#   type = string
+#    description = "AWS credentials"
+#}
 
-variable "aws_profile" {
-    type = string
-    description = "AWS profile"
-}
+# variable "aws_profile" {
+#    type = string
+#    description = "AWS profile"
+#}
 
