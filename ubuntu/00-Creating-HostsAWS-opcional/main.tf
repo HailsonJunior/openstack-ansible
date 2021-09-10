@@ -26,8 +26,8 @@ provider "aws" {
 #    profile = var.aws_profile
 }
 
-module "security_group" {
-    source = "./security_group"
+module "security_groups" {
+    source = "./security_groups"
 }
 
 module "s3" {
