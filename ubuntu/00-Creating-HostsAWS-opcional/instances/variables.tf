@@ -1,8 +1,3 @@
-variable "aws_region_vpc" {
-    type = string
-    description = "Região da VPC"  
-}
-
 variable "ami" {
     type = string
     description = "AMI da instancia"
