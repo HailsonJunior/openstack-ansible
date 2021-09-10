@@ -8,7 +8,7 @@ resource "aws_vpc" "openstack-vpc" {
 
 resource "aws_subnet" "openstack-subnet" {
     vpc_id = aws_vpc.openstack-vpc.id
-    cidr_block = "10.0.0.0/20"
+    cidr_block = "10.0.0.0/24"
     availability_zone = "us-east-1a"  
 
     tags = {
@@ -157,5 +157,5 @@ resource "aws_instance" "object2" {
 }
 resource "aws_key_pair" "key_openstack" {
     key_name = "key_openstack"
-    public_key = "IaC.pem"
+    public_key = "IaC"
 }
