@@ -100,3 +100,48 @@ resource "aws_key_pair" "key_openstack" {
 module "vpc" {
     source = "../vpc"
 }
+
+resource "aws_network_interface" "controller-network" {
+    subnet_id = aws_subnet.openstack-subnet.id
+    private_ips = [ "10.0.0.11" ]
+
+    tags = {
+      "Name" = "primary_network_interface"
+    }
+}
+
+resource "aws_network_interface" "compute-network" {
+    subnet_id = aws_subnet.openstack-subnet.id
+    private_ips = [ "10.0.0.31" ]
+
+    tags = {
+      "Name" = "primary_network_interface"
+    }
+}
+
+resource "aws_network_interface" "block1-network" {
+    subnet_id = aws_subnet.openstack-subnet.id
+    private_ips = [ "10.0.0.41" ]
+
+    tags = {
+      "Name" = "primary_network_interface"
+    }
+}
+
+resource "aws_network_interface" "object1-network" {
+    subnet_id = aws_subnet.openstack-subnet.id
+    private_ips = [ "10.0.0.51" ]
+
+    tags = {
+      "Name" = "primary_network_interface"
+    }
+}
+
+resource "aws_network_interface" "object2-network" {
+    subnet_id = aws_subnet.openstack-subnet.id
+    private_ips = [ "10.0.0.52" ]
+
+    tags = {
+      "Name" = "primary_network_interface"
+    }
+}
