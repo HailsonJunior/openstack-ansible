@@ -9,7 +9,7 @@ resource "aws_vpc" "openstack-vpc" {
 resource "aws_subnet" "openstack-subnet" {
     vpc_id = aws_vpc.openstack-vpc
     cidr_block = "10.0.0.0/20"
-    availability_zone = "us-east-1a"  
+    availability_zone = var.aws_region_vpc  
 
     tags = {
       "Name" = "openstack-subnet"
@@ -63,7 +63,7 @@ resource "aws_network_interface" "object2-network" {
 
 resource "aws_instance" "controller" {
     instance_type = "t2.micro"
-    ami = "ami-0cb5f8e033cfa84d2"
+    ami = var.ami
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]
 
@@ -73,8 +73,8 @@ resource "aws_instance" "controller" {
     }
 
     root_block_device {
-        volume_size = 30
-        volume_type = "gp2"
+        volume_size = block_size
+        volume_type = block_type
         delete_on_termination = true
     }
 
@@ -86,13 +86,13 @@ resource "aws_instance" "controller" {
 
 resource "aws_instance" "compute" {
     instance_type = "t2.micro"
-    ami = "ami-0cb5f8e033cfa84d2"
+    ami = var.ami
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]
 
     root_block_device {
-        volume_size = 30
-        volume_type = "gp2"
+        volume_size = block_size
+        volume_type = block_type
         delete_on_termination = true
     }
 
@@ -104,13 +104,13 @@ resource "aws_instance" "compute" {
 
 resource "aws_instance" "block1" {
     instance_type = "t2.micro"
-    ami = "ami-0cb5f8e033cfa84d2"
+    ami = var.ami
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]
 
     root_block_device {
-        volume_size = 30
-        volume_type = "gp2"
+        volume_size = block_size
+        volume_type = block_type
         delete_on_termination = true
     }
 
@@ -122,13 +122,13 @@ resource "aws_instance" "block1" {
 
 resource "aws_instance" "object1" {
     instance_type = "t2.micro"
-    ami = "ami-0cb5f8e033cfa84d2"
+    ami = var.ami
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]
 
     root_block_device {
-        volume_size = 30
-        volume_type = "gp2"
+        volume_size = block_size
+        volume_type = block_type
         delete_on_termination = true
     }
 
@@ -140,13 +140,13 @@ resource "aws_instance" "object1" {
 
 resource "aws_instance" "object2" {
     instance_type = "t2.micro"
-    ami = "ami-0cb5f8e033cfa84d2"
+    ami = var.ami
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]
 
     root_block_device {
-        volume_size = 30
-        volume_type = "gp2"
+        volume_size = block_size
+        volume_type = block_type
         delete_on_termination = true
     }
 
