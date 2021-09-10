@@ -4,6 +4,11 @@ resource "aws_instance" "controller" {
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]
 
+    network_interface {
+      network_interface_id = aws_network_interface.controller-network.id
+      device_index = 0
+    }
+
     root_block_device {
         volume_size = 30
         volume_type = "gp2"
