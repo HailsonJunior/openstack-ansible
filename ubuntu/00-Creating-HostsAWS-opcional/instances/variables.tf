@@ -19,7 +19,7 @@ variable "block_type" {
 variable "key_pair" {
     type = string
     description = "Par de chave"
-    defaudefault = "IaC"  
+    default = "IaC"  
 }
 
 # variable "aws_credential" {
