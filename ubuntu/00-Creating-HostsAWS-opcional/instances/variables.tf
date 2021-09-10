@@ -16,6 +16,12 @@ variable "block_type" {
     default = "gp2"
 }
 
+variable "key_pair" {
+    type = string
+    description = "Par de chave"
+    defaudefault = "IaC"  
+}
+
 # variable "aws_credential" {
 #   type = string
 #    description = "AWS credentials"
