@@ -41,5 +41,5 @@ module "instances" {
 }
 
 module "variables" {
-    source = "./variables.tf"  
+    source = "./variables"  
 }
