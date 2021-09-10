@@ -39,7 +39,3 @@ module "s3" {
 module "instances" {
     source = "./instances"
 }
-
-module "variables" {
-    source = "./variables"  
-}

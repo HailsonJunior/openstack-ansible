@@ -1,6 +1,6 @@
-variable "aws_region" {
+variable "aws_region_vpc" {
     type = string
-    description = "Região do privider AWS"
+    description = "Região da VPC"  
 }
 
 variable "ami" {
