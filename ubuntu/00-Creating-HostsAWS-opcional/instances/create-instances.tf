@@ -64,7 +64,7 @@ resource "aws_network_interface" "object2-network" {
 resource "aws_instance" "controller" {
     instance_type = "t2.micro"
     ami = var.ami
-    key_name = "key_pair"
+    key_name = var.key_pair
     security_groups = ["Iac_group"]
 
     network_interface {
@@ -87,7 +87,7 @@ resource "aws_instance" "controller" {
 resource "aws_instance" "compute" {
     instance_type = "t2.micro"
     ami = var.ami
-    key_name = "key_pair"
+    key_name = var.key_pair
     security_groups = ["Iac_group"]
 
     root_block_device {
@@ -105,7 +105,7 @@ resource "aws_instance" "compute" {
 resource "aws_instance" "block1" {
     instance_type = "t2.micro"
     ami = var.ami
-    key_name = "key_pair"
+    key_name = var.key_pair
     security_groups = ["Iac_group"]
 
     root_block_device {
@@ -123,7 +123,7 @@ resource "aws_instance" "block1" {
 resource "aws_instance" "object1" {
     instance_type = "t2.micro"
     ami = var.ami
-    key_name = "key_pair"
+    key_name = var.key_pair
     security_groups = ["Iac_group"]
 
     root_block_device {
@@ -141,7 +141,7 @@ resource "aws_instance" "object1" {
 resource "aws_instance" "object2" {
     instance_type = "t2.micro"
     ami = var.ami
-    key_name = "key_pair"
+    key_name = var.key_pair
     security_groups = ["Iac_group"]
 
     root_block_device {
