@@ -18,13 +18,15 @@ terraform {
     #}
 }
 
+# Utilize variáveis de ambiente para key id e secret key da AWS ou descomente a linha "shared_credentials_file" informando o caminho do arquivo com as credenciais
+#
 provider "aws" {
     region = var.aws_region
-    shared_credentials_file = var.aws_credential
+#    shared_credentials_file = var.aws_credential
     profile = var.aws_profile
 }
 
-# Descomente cso seja necessário criar um security group
+# Descomente caso seja necessário criar um security group
 # module "security_group" {
 #    source = "./security_group"
 #}

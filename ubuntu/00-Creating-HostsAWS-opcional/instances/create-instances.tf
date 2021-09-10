@@ -9,7 +9,7 @@ resource "aws_instance" "openstack_hosts_large" {
         }
     }
 
-    instance_type = "t2.large"
+    instance_type = "t2.micro"
     ami = "ami-0cb5f8e033cfa84d2"
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]  
@@ -40,7 +40,7 @@ resource "aws_instance" "openstack_hosts_medium" {
         }
     }
 
-    instance_type = "t2.medium"
+    instance_type = "t2.micro"
     ami = "ami-0cb5f8e033cfa84d2"
     key_name = "${aws_key_pair.key_openstack.key_name}"
     security_groups = ["Iac_group"]  
