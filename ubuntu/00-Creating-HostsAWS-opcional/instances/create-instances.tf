@@ -7,7 +7,7 @@ resource "aws_vpc" "openstack-vpc" {
 }
 
 resource "aws_subnet" "openstack-subnet" {
-    vpc_id = aws_vpc.openstack-vpc
+    vpc_id = aws_vpc.openstack-vpc.id
     cidr_block = "10.0.0.0/20"
     availability_zone = "us-east-1a"  
 
