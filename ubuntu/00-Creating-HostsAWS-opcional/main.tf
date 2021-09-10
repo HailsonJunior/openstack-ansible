@@ -26,11 +26,9 @@ provider "aws" {
 #    profile = var.aws_profile
 }
 
-# Descomente caso seja necessário criar um security group
-#
-# module "security_group" {
-#    source = "./security_group"
-#}
+module "security_group" {
+    source = "./security_group"
+}
 
 module "s3" {
     source = "./s3"
