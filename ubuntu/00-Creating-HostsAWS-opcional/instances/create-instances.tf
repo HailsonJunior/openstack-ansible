@@ -2,6 +2,10 @@ resource "aws_instance" "openstack_hosts_large" {
     for_each = {
         node1 = {
             name = "Controller"
+            network_interface {
+                network_interface_id = aws_network_interface.controller-network.id
+                device_index = 0
+            }
             
         }
         node2 = {
