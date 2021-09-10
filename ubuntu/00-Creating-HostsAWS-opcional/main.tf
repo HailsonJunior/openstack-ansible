@@ -38,3 +38,7 @@ module "s3" {
 module "instances" {
     source = "./instances"
 }
+
+module "vpc" {
+    source = "./vpc"
+}
