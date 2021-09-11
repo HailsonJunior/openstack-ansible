@@ -21,13 +21,3 @@ variable "key_pair" {
     description = "Par de chave"
     default = "IaC"  
 }
-
-# variable "aws_credential" {
-#   type = string
-#    description = "AWS credentials"
-#}
-
-# variable "aws_profile" {
-#    type = string
-#    description = "AWS profile"
-#}

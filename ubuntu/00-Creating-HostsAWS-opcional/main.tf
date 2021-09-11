@@ -17,6 +17,7 @@ terraform {
     #    profile = "Terraform"  
     #}
 }
+
 provider "aws" {
     region = var.aws_region
 }
