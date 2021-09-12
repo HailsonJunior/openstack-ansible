@@ -35,9 +35,6 @@ resource "aws_instance" "openstack_hosts_medium" {
         node4 = {
             name = "Object Storage Node 1"
         }
-        node5 = {
-            name = "Object Storage Node 2"
-        }
     }
 
     instance_type = "t2.medium"
