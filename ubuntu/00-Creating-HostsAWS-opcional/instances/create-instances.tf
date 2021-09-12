@@ -1,4 +1,4 @@
-resource "aws_instance" "openstack_hosts_large" {
+resource "aws_instance" "openstack_hosts_xlarge" {
     for_each = {
         node1 = {
             name = "Controller"
@@ -9,7 +9,7 @@ resource "aws_instance" "openstack_hosts_large" {
         }
     }
 
-    instance_type = "t2.large"
+    instance_type = "t2.xlarge"
     ami = var.ami
     key_name = var.key_pair
     security_groups = ["Iac_group"]  
