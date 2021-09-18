@@ -1,0 +1,18 @@
+---
+- name: Update environment
+  apt:
+    update_cache: yes
+  tags: update
+
+- name: Upgrade packages
+  apt:
+    name: "*"
+    state: latest
+  tags: upgrade
+
+- name: Configure hostname
+  hostname:
+    name: controller
+  when: "'node1' in inventory_hostname"
+
+...  

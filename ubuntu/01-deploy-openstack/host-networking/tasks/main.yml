@@ -1,0 +1,5 @@
+---
+- include: prepare-hosts.yml
+- include: name-resolution.yml
+
+...  
