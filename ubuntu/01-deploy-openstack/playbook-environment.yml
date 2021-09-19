@@ -4,4 +4,4 @@
   become: yes
   become_method: sudo
   roles:
-    - { role: host-networking, tags: ["networking"]}
+    - { role: prepare-environment, tags: ["prepare-environment"]}

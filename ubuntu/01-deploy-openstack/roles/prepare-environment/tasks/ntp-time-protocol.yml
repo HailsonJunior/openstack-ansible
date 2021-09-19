@@ -1,0 +1,35 @@
+---
+- name: Install Chrony
+  apt:
+    name: chrony
+    state: latest
+  tags: install-chrony
+
+- name: Edit chrony conf NTP Server - controller
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    line: server {{ NTP_SERVER }} iburst
+  when: "'node1' in inventory_hostname"
+  tags: chrony-conf-controller
+
+- name: Edit chrony conf allow conection other nodes - controller
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    line: allow 172.31.80.0/20
+  when: "'node1' in inventory_hostname"
+  tags: chrony-conf-other
+
+- name: Edit chrony conf reference controller node - other nodes
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    line: server controller iburst
+  when: "'node1' not in inventory_hostname"
+  tags: chrony-conf-other
+
+- name: Restart Chrony
+  service:
+    name: chrony
+    state: restarted
+  tags: restart chrony
+
+...  

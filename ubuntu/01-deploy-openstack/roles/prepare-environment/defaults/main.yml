@@ -1,0 +1,17 @@
+---
+## Nodes IPs
+
+ip_controller: 172.31.95.215
+ip_compute: 172.31.83.8
+ip_block: 172.31.95.176
+ip_object: 172.31.80.98
+
+## NTP Server
+
+NTP_SERVER: x.x.x.x
+
+
+## Passwords
+
+db_root_pass: openstack
+

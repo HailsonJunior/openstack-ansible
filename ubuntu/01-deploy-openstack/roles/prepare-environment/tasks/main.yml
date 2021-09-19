@@ -1,0 +1,8 @@
+---
+- include: prepare-hosts.yml
+- include: name-resolution.yml
+- include: ntp-time-protocol.yml
+- include: openstack-packages.yml
+- include: database.yml
+
+...  

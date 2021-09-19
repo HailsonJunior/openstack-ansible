@@ -1,0 +1,68 @@
+---
+- name: Install MariaDB Server and Python3 pymysql
+  apt:
+    name:
+      - mariadb-server
+      - python3-pymysql
+    state: latest
+  when: "'node1' in inventory_hostname"
+
+- name: Configure mysqld
+  blockinfile:
+    path: /etc/mysql/mariadb.conf.d/99-openstack.cnf
+    create: yes
+    block: |
+      [mysqld]
+      bind-address = {{ ip_controller }}
+
+      default-storage-engine = innodb
+      innodb_file_per_table = on
+      max_connections = 4096
+      collation-server = utf8_general_ci
+      character-set-server = utf8
+  when: "'node1' in inventory_hostname"
+  tags: configure-mysqld
+
+- name: Restart mysql
+  service:
+    name: mysql
+    state: restarted
+  when: "'node1' in inventory_hostname"
+  tags: restart-mysql
+
+- name: Mysql set root password
+  mysql_user: login_user=root login_password="" user=root password="{{ db_root_pass }}"
+  when: "'node1' in inventory_hostname"
+  tags: db-set-root-pass
+
+- name: Mysql removing anonymous users
+  mysql_user: user="" host="{{ ansible_fqdn }}" state="absent"
+  when: "'node1' in inventory_hostname"
+  tags: db-remove-anonymous-users
+
+- name: Mysql removing root remote access 
+  mysql_user: user="root" password="{{ mysql_root_password }}" host="::1"
+  when: "'node1' in inventory_hostname"
+  tags: db-remove-remote-access
+
+- name: Mysql removing root remote access
+  mysql_user: user="root" password="{{ mysql_root_password }}" host="127.0.0.1"
+  when: "'node1' in inventory_hostname"
+  tags: db-remove-remote-access
+
+- name: Mysql removing root remote access
+  mysql_user: user="root" password="{{ mysql_root_password }}" host="localhost"
+  when: "'node1' in inventory_hostname"
+  tags: db-remove-remote-access
+
+- name: Mysql removing root remote access
+  mysql_user: user="root" password="{{ mysql_root_password }}" host="{{ ansible_fqdn }}"
+  when: "'node1' in inventory_hostname"
+  tags: db-remove-remote-access
+
+- name: Removes the MySQL test database
+  mysql_db: db=test state=absent
+  when: "'node1' in inventory_hostname"
+  tags: remove-test-db
+
+...

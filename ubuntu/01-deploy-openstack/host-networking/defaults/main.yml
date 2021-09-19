@@ -1,7 +1,0 @@
----
-## Nodes IPs
-
-ip_controller: 172.31.95.215
-ip_compute: x.x.x.x
-ip_block: x.x.x.x
-ip_object: x.x.x.x
