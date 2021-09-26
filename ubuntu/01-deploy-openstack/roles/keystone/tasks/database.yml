@@ -1,0 +1,11 @@
+---
+- name: Create keystone database
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: keystone
+    state: present
+    login_user: root
+    login_password: "{{ db_root_pass }}"
+  tags: keystone-database
+
+...  

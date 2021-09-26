@@ -1,0 +1,27 @@
+---
+- name: Install package - memcached and python3-memcache
+  apt:
+    name:
+      - memcached 
+      - python3-memcache
+    state: latest
+  when: "'node1' in inventory_hostname"
+  tags: install-memcached
+
+- name: Edit memcached conf file
+  replace:
+    path: /etc/memcached.conf
+    regexp: '-l 127.0.0.1'
+    replace: '-l {{ ip_controller }}'
+  when: "'node1' in inventory_hostname"
+  tags: memcached-conf
+
+- name: Restart and enable memcached service
+  service:
+    name: memcached
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-memcached
+
+...

@@ -4,5 +4,8 @@
 - include: ntp-time-protocol.yml
 - include: openstack-packages.yml
 - include: database.yml
+- include: message-queue-rabbitmq.yml
+- include: memcached.yml
+- include: etcd.yml
 
 ...  

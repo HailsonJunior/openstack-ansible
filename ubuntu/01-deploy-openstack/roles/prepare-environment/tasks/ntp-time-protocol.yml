@@ -30,6 +30,7 @@
   service:
     name: chrony
     state: restarted
+    enabled: yes
   tags: restart chrony
 
 ...  

@@ -1,0 +1,33 @@
+---
+- name: Install package etcd
+  apt:
+    name: etcd
+    state: latest
+  when: "'node1' in inventory_hostname"
+  tags: install-etcd
+
+- name: Edit etcd conf file
+  blockinfile:
+    path: /etc/default/etcd
+    block: |
+      ETCD_NAME="controller"
+      ETCD_DATA_DIR="/var/lib/etcd"
+      ETCD_INITIAL_CLUSTER_STATE="new"
+      ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster-01"
+      ETCD_INITIAL_CLUSTER="controller=http://{{ ip_controller }}:2380"
+      ETCD_INITIAL_ADVERTISE_PEER_URLS="http://{{ ip_controller }}:2380"
+      ETCD_ADVERTISE_CLIENT_URLS="http://{{ ip_controller }}:2379"
+      ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"
+      ETCD_LISTEN_CLIENT_URLS="http://{{ ip_controller }}:2379"
+  when: "'node1' in inventory_hostname"
+  tags: etcd-configure
+
+- name: Restart and enable etcd service
+  service:
+    name: etcd
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-etcd
+
+...

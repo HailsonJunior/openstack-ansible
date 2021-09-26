@@ -5,9 +5,5 @@ ip_compute: 172.31.93.81
 ip_block: 172.31.83.54
 ip_object: 172.31.80.64
 
-## NTP Server
-NTP_SERVER: x.x.x.x
-
 ## Passwords
 db_root_pass: openstack
-RABBIT_PASS: openstack

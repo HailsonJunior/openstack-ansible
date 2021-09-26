@@ -6,6 +6,7 @@
       - python3-pymysql
     state: latest
   when: "'node1' in inventory_hostname"
+  tags: install-mariadb
 
 - name: Configure mysqld
   blockinfile:
@@ -27,42 +28,42 @@
   service:
     name: mysql
     state: restarted
+    enabled: yes
   when: "'node1' in inventory_hostname"
   tags: restart-mysql
 
-- name: Mysql set root password
-  mysql_user: login_user=root login_password="" user=root password="{{ db_root_pass }}"
+- name: Mysql secure instalation - create script file
+  file:
+    path: /tmp/mysql-secure-instalation.sh
+    state: touch
+    mode: '0777'
   when: "'node1' in inventory_hostname"
-  tags: db-set-root-pass
+  tags: mysql-secure-instalation
 
-- name: Mysql removing anonymous users
-  mysql_user: user="" host="{{ ansible_fqdn }}" state="absent"
+- name: Mysql secure instalation - configure script
+  blockinfile:
+    path: /tmp/mysql-secure-instalation.sh
+    block: |
+      #!/bin/bash
+      #
+      # Make sure that NOBODY can access the server without a password
+      mysql -e "UPDATE mysql.user SET Password = {{ db_root_pass }}('CHANGEME') WHERE User = 'root'"
+      # Kill the anonymous users
+      mysql -e "DROP USER ''@'localhost'"
+      # Because our hostname varies we'll use some Bash magic here.
+      mysql -e "DROP USER ''@'$(hostname)'"
+      # Kill off the demo database
+      mysql -e "DROP DATABASE test"
+      # Make our changes take effect
+      mysql -e "FLUSH PRIVILEGES"
+      # Any subsequent tries to run queries this way will get access denied because lack of usr/pwd param
+      #
   when: "'node1' in inventory_hostname"
-  tags: db-remove-anonymous-users
+  tags: mysql-secure-instalation
 
-- name: Mysql removing root remote access 
-  mysql_user: user="root" password="{{ mysql_root_password }}" host="::1"
+- name: Mysql secure instalation - execute script
+  shell: bash /tmp/mysql-secure-instalation.sh
   when: "'node1' in inventory_hostname"
-  tags: db-remove-remote-access
-
-- name: Mysql removing root remote access
-  mysql_user: user="root" password="{{ mysql_root_password }}" host="127.0.0.1"
-  when: "'node1' in inventory_hostname"
-  tags: db-remove-remote-access
-
-- name: Mysql removing root remote access
-  mysql_user: user="root" password="{{ mysql_root_password }}" host="localhost"
-  when: "'node1' in inventory_hostname"
-  tags: db-remove-remote-access
-
-- name: Mysql removing root remote access
-  mysql_user: user="root" password="{{ mysql_root_password }}" host="{{ ansible_fqdn }}"
-  when: "'node1' in inventory_hostname"
-  tags: db-remove-remote-access
-
-- name: Removes the MySQL test database
-  mysql_db: db=test state=absent
-  when: "'node1' in inventory_hostname"
-  tags: remove-test-db
+  tags: mysql-secure-instalation
 
 ...
