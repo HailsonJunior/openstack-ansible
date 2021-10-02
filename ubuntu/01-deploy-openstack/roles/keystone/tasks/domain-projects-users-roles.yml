@@ -1,0 +1,26 @@
+---
+- name: Export environment variables
+  shell: export OS_USERNAME=admin && export OS_PASSWORD={{ bootstrap_pass }} && export OS_PROJECT_NAME=admin && export OS_USER_DOMAIN_NAME=Default && export OS_PROJECT_DOMAIN_NAME=Default && export OS_AUTH_URL=http://controller:5000/v3 && export OS_IDENTITY_API_VERSION=3
+  tags: export-variables
+
+- name: Create a domain for example
+  shell: openstack domain create --description "An Example Domain" example
+  tags: create-domain
+
+- name: Create a project
+  shell: openstack project create --domain default --description "Service Project" service
+  tags: create project
+
+- name: Create demo project
+  shell: openstack project create --domain default --description "Demo Project" myproject
+  tags: create-demo-project
+
+- name: Create user myuser
+  shell: openstack user create --domain default --password-prompt myuser
+  tags: create-user
+
+- name: Add the myrole role to the myproject project and myuser user
+  shell: openstack role add --project myproject --user myuser myrole
+  tags: add-prject-to-role
+
+...  

@@ -1,0 +1,10 @@
+---
+- name: Edit apache conf file - ServerName
+  lineinfile:
+    path: /etc/apache2/apache2.conf
+    line: 'ServerName controller'
+  notify:
+    - Restart apache
+  tags: apache-conf
+
+...  

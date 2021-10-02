@@ -60,4 +60,12 @@
   shell: keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
   tags: init-fernet-key-repository
 
+- name: Bootstrap the Identity service
+  shell: keystone-manage bootstrap --bootstrap-password {{ bootstrap_pass }} \
+         --bootstrap-admin-url http://controller:5000/v3/ \
+         --bootstrap-internal-url http://controller:5000/v3/ \
+         --bootstrap-public-url http://controller:5000/v3/ \
+         --bootstrap-region-id RegionOne
+  tags: bootstrap-identity
+
 ...  
