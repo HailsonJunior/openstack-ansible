@@ -1,0 +1,19 @@
+---
+- name: Configure name resolution
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      # controller
+      {{ ip_controller }}   controller
+      
+      # compute1
+      {{ ip_compute }}      compute1
+
+      # block1
+      {{ ip_block }}        block1
+
+      # object1
+      {{ ip_object }}       object1
+  tags: name-resolution
+
+...  

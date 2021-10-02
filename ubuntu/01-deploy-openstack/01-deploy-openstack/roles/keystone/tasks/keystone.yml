@@ -1,0 +1,41 @@
+---
+- name: Install keystone
+  apt:
+    name: keystone
+    state: latest
+  tags: install-keystone
+
+- name: Edit keystone conf file - connection line
+  lineinfile:
+    path: /etc/keystone/keystone.conf
+    regexp: '^connection ='
+    line: 'connection = mysql+pymysql://keystone:{{ KEYSTONE_DBPASS }}@controller/keystone'
+  tags: connection-conf-keystone
+
+- name: Edit keystone conf file - token section
+  lineinfile:
+    path: /etc/keystone/keystone.conf
+    insertafter: '^\[token\]$'
+    line: 'provider = fernet'
+  tags: token-conf-keystone
+
+- name: Populate the Identity service database
+  shell: sudo su -s /bin/sh -c "keystone-manage db_sync" keystone
+  tags: populate-identity-db
+
+- name: Initialize Fernet key repositories
+  shell: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+  tags: init-fernet-key-repository
+
+- name: Initialize Fernet key repositories
+  shell: keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
+  tags: init-fernet-key-repository
+
+- name: Bootstrap the Identity service
+  shell: keystone-manage bootstrap --bootstrap-password {{ bootstrap_pass }} \
+         --bootstrap-admin-url http://controller:5000/v3/ \
+         --bootstrap-internal-url http://controller:5000/v3/ \
+         --bootstrap-public-url http://controller:5000/v3/ \
+         --bootstrap-region-id RegionOne
+
+...      
