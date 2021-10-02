@@ -1,5 +1,5 @@
 ---
-- name: Install Package
+- name: Install Package - rabbitmq-server
   apt:
     name: rabbitmq-server
     state: latest

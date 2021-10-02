@@ -1,7 +1,0 @@
---- # https://docs.openstack.org/install-guide/environment.html
-- name: Configure environment
-  hosts: 'all'
-  become: yes
-  become_method: sudo
-  roles:
-    - { role: prepare-environment, tags: ["prepare-environment"]}

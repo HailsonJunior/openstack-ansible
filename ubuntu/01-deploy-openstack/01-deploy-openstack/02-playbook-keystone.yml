@@ -1,7 +1,0 @@
---- # https://docs.openstack.org/keystone/wallaby/install/
-- name: Install and configure Keystone identity service
-  hosts: 'controller'
-  become: yes
-  become_method: sudo
-  roles:
-    - { role: keystone, tags: ["keystone"]}
