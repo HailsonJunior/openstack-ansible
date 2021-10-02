@@ -1,7 +1,17 @@
 ---
-- name: Export environment variables
-  shell: export OS_USERNAME=admin && export OS_PASSWORD={{ bootstrap_pass }} && export OS_PROJECT_NAME=admin && export OS_USER_DOMAIN_NAME=Default && export OS_PROJECT_DOMAIN_NAME=Default && export OS_AUTH_URL=http://controller:5000/v3 && export OS_IDENTITY_API_VERSION=3
-  tags: export-variables
+- name: Export environment variable - OS_USERNAME
+  lineinfile:
+    path: /etc/environment
+    line: "{{ item.line }}"
+  loop:
+    - { line: 'OS_USERNAME="admin"' }
+    - { line: 'OS_PASSWORD="{{ bootstrap_pass }}"' }
+    - { line: 'OS_PROJECT_NAME="admin"' }
+    - { line: 'OS_USER_DOMAIN_NAME="Default"' }
+    - { line: 'OS_PROJECT_DOMAIN_NAME="Default"' }
+    - { line: 'OS_AUTH_URL="http://controller:5000/v3"' }
+    - { line: 'OS_IDENTITY_API_VERSION="3"' }
+  tags: export-var
 
 - name: Create a domain for example
   shell: openstack domain create --description "An Example Domain" example
