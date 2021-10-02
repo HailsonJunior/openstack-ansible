@@ -1,0 +1,8 @@
+---
+- name: Install Horizon dashboard
+  apt:
+    name: openstack-dashboard
+    state: latest
+  tags: install-dash
+
+...  
