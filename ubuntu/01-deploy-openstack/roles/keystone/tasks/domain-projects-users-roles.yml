@@ -19,15 +19,19 @@
 
 - name: Create a project
   shell: openstack project create --domain default --description "Service Project" service
-  tags: create project
+  tags: create-project
 
 - name: Create demo project
   shell: openstack project create --domain default --description "Demo Project" myproject
   tags: create-demo-project
 
 - name: Create user myuser
-  shell: openstack user create --domain default --password-prompt myuser
+  shell: openstack user create --domain default --password {{ myuser_pass }} myuser
   tags: create-user
+
+- name: Create myrole
+  shell: openstack role create myrole
+  tags: create-role
 
 - name: Add the myrole role to the myproject project and myuser user
   shell: openstack role add --project myproject --user myuser myrole

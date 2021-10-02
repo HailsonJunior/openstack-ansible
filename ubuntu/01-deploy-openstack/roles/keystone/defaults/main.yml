@@ -1,6 +1,6 @@
 ---
 ## Nodes IPs
-ip_controller: 172.31.88.6
+ip_controller: 172.31.92.17
 ip_compute: 172.31.82.204
 ip_block: 172.31.93.255
 ip_object: 172.31.90.30
@@ -9,3 +9,4 @@ ip_object: 172.31.90.30
 db_root_pass: openstack
 KEYSTONE_DBPASS: openstack
 bootstrap_pass: openstack
+myuser_pass: openstack
