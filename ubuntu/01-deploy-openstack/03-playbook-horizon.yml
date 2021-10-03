@@ -1,4 +1,4 @@
----
+--- # https://docs.openstack.org/horizon/wallaby/install/
 - name: Install and configure Horizon dashboard
   hosts: 'controller'
   become: yes

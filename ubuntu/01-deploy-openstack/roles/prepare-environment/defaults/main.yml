@@ -1,12 +1,12 @@
 ---
 ## Nodes IPs
-ip_controller: 172.31.92.17
-ip_compute: 172.31.93.81
-ip_block: 172.31.83.54
-ip_object: 172.31.80.64
+ip_controller: 172.31.87.124
+ip_compute: 172.31.84.41
+ip_block: 172.31.93.87
+ip_object: 172.31.89.35
 
 ## NTP Server
-NTP_SERVER: x.x.x.x
+NTP_SERVER: localhost
 
 ## Passwords
 db_root_pass: openstack

@@ -37,7 +37,7 @@ resource "aws_instance" "openstack_hosts_medium" {
         }
     }
 
-    instance_type = "t2.medium"
+    instance_type = "t2.micro"
     ami = var.ami
     key_name = var.key_pair
     security_groups = ["Iac_group"]  
