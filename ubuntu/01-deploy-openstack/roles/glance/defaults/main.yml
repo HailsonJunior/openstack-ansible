@@ -1,0 +1,7 @@
+---
+# Database root password
+db_root_pass: openstack
+GLANCE_DBPASS: openstack
+
+# Openstack glance user password
+GLANCE_PASS: openstack

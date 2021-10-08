@@ -1,6 +1,6 @@
 ---
 ## Nodes IPs
-ip_controller: 172.31.87.124
+ip_controller: 172.31.84.238
 
 ## Passwords
 db_root_pass: openstack

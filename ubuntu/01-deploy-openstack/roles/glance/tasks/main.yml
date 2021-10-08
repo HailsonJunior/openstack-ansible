@@ -1,0 +1,7 @@
+---
+- include: database.yml
+- include: service-credentials.yml
+- include: install-and-configure.yml
+- include: verify-glance-service.yml
+
+...

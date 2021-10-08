@@ -1,0 +1,80 @@
+---
+- name: Install glance
+  apt:
+    name: glance
+    state: latest
+  tags: install-glance
+
+- name: Config database section
+  replace:
+    path: /etc/glance/glance-api.conf
+    regexp: 'connection = sqlite:////var/lib/glance/glance.sqlite'
+    replace: 'connection = mysql+pymysql://glance:{{ GLANCE_DBPASS }}@controller/glance'
+  tags: conf-database-section
+
+- name: Keystone authtoken section
+  blockinfile:
+    path: /etc/glance/glance-api.conf
+    insertafter: '^\[keystone_authtoken\]$'
+    block: |
+      www_authenticate_uri = http://controller:5000
+      auth_url = http://controller:5000
+      memcached_servers = controller:11211
+      auth_type = password
+      project_domain_name = Default
+      user_domain_name = Default
+      project_name = service
+      username = glance
+      password = {{ GLANCE_PASS }}
+  tags: keystone-section
+
+- name: Config paste deploy section
+  lineinfile:
+    path: /etc/glance/glance-api.conf
+    line: 'flavor = keystone'
+    insertafter: '[paste_deploy]'
+  tags: paste-deploy
+
+- name: Coment glance store section
+  replace:
+    path: /etc/glance/glance-api.conf
+    regexp: '^\[glance_store\]$'
+    replace: '#[glance_store]'
+  tags: comment-glance-store-section
+
+- name: Config glance store section
+  lineinfile:
+    path: /etc/glance/glance-api.conf
+    line: '[glance_store]'
+  tags: glance-store-section
+
+- name: Config glance store section
+  lineinfile:
+    path: /etc/glance/glance-api.conf
+    line: 'stores = file,http'
+  tags: glance-store-section
+
+- name: Config glance store section
+  lineinfile:
+    path: /etc/glance/glance-api.conf
+    line: 'default_store = file'
+  tags: glance-store-section
+
+- name: Config glance store section
+  lineinfile:
+    path: /etc/glance/glance-api.conf
+    line: 'filesystem_store_datadir = /var/lib/glance/images/'
+  tags: glance-store-section
+
+- name: Populate the Image service database
+  shell: su -s /bin/sh -c "glance-manage db_sync" glance
+  tags: populate-database
+
+- name: Restart glance-api
+  service:
+    name: glance-api
+    state: restarted
+    enabled: yes
+  tags: restart-glance-api
+
+...

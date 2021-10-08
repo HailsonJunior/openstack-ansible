@@ -1,0 +1,32 @@
+---
+- name: Create Glance database
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: glance
+    state: present
+    login_user: root
+    login_password: "{{ db_root_pass }}"
+  tags: glance-database
+
+- name: Grant proper access to the glance database - localhost
+  mysql_user:
+    name: glance
+    password: "{{ GLANCE_DBPASS }}"
+    host: localhost
+    state: present
+    update_password: on_create
+    priv: 'glance.*:ALL'
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  tags: privileges-glance-userdb
+
+- name: Grant proper access to the glance database - any host
+  mysql_user:
+    name: glance
+    password: "{{ GLANCE_DBPASS }}"
+    host: '%'
+    state: present
+    priv: 'glance.*:ALL'
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  tags: privileges-glance-userdb
+
+...  

@@ -1,9 +1,12 @@
 ---
 ## Nodes IPs
-ip_controller: 172.31.87.124
-ip_compute: 172.31.84.41
-ip_block: 172.31.93.87
-ip_object: 172.31.89.35
+ip_controller: 172.31.84.238
+ip_compute: 172.31.85.35
+ip_block: 172.31.93.151
+ip_object: 172.31.80.228
+
+## Network
+network: 172.31.0.0/16
 
 ## NTP Server
 NTP_SERVER: localhost

@@ -1,0 +1,9 @@
+--- # https://docs.openstack.org/glance/wallaby/install/
+- name: Install and configure Glance image service
+  hosts: 'controller'
+  become: yes
+  become_method: sudo
+  roles:
+    - { role: glance, tags: ["glance"]}
+
+...      
