@@ -1,0 +1,90 @@
+---
+- name: Create the nova_api database
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: nova_api
+    state: present
+    login_user: root
+    login_password: "{{ db_root_pass }}"
+  tags: create-nova-api-database
+
+- name: Create the nova database
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: nova
+    state: present
+    login_user: root
+    login_password: "{{ db_root_pass }}"
+  tags: create-nova-database
+
+- name: Create the nova_cell0 database
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: nova_cell0
+    state: present
+    login_user: root
+    login_password: "{{ db_root_pass }}"
+  tags: create-nova-cell0-database
+
+- name: Grant proper access to the database nova_api - localhost
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: nova
+    password: "{{ NOVA_DBPASS }}"
+    host: localhost
+    state: present
+    update_password: on_create
+    priv: 'nova_api.*:ALL'
+  tags: privileges-nova-api-db
+
+- name: Grant proper access to the database nova_api - other hosts
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: nova
+    password: "{{ NOVA_DBPASS }}"
+    host: '%'
+    state: present
+    priv: 'nova_api.*:ALL'
+  tags: privileges-nova-api-db
+
+- name: Grant proper access to the database nova - localhost
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: nova
+    password: "{{ NOVA_DBPASS }}"
+    host: localhost
+    state: present
+    priv: 'nova.*:ALL'
+  tags: privileges-nova-db
+
+- name: Grant proper access to the database nova - other hosts
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: nova
+    password: "{{ NOVA_DBPASS }}"
+    host: '%'
+    state: present
+    priv: 'nova.*:ALL'
+  tags: privileges-nova-db
+
+- name: Grant proper access to the database nova_cell0 - localhost
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: nova
+    password: "{{ NOVA_DBPASS }}"
+    host: localhost
+    state: present
+    priv: 'nova_cell0.*:ALL'
+  tags: privileges-nova-cell0-db
+
+- name: Grant proper access to the database nova_cell0 - other hosts
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: nova
+    password: "{{ NOVA_DBPASS }}"
+    host: '%'
+    state: present
+    priv: 'nova_cell0.*:ALL'
+  tags: privileges-nova-cell0-db
+
+...  

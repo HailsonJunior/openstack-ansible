@@ -1,0 +1,9 @@
+--- # https://docs.openstack.org/nova/wallaby/install/
+- name: Install and configure nova service
+  hosts: 'controller, compute'
+  become: yes
+  become_method: sudo
+  roles:
+    - { role: nova, tags: ["nova"]}
+
+...      

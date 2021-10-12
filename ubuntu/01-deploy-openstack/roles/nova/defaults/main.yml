@@ -1,0 +1,9 @@
+---
+# Databases passwords
+db_root_pass: openstack
+NOVA_DBPASS: openstack
+
+# Other passwords
+NOVA_PASS: openstack
+
+...

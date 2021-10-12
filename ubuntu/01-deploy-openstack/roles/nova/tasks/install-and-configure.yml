@@ -1,0 +1,14 @@
+---
+- name: Install nova-api nova-consuctor nova-novncproxy nova-scheduler
+  apt:
+    name:
+      - nova-api
+      - nova-conductor
+      - nova-novncproxy
+      - nova-scheduler
+    state: latest
+  tags: install-packages
+
+- name: 
+
+...  
