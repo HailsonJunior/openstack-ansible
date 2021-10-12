@@ -1,0 +1,7 @@
+---
+# Database passwords
+db_root_pass: openstack
+PLACEMENT_DBPASS: openstack
+
+# Placement password
+PLACEMENT_PASS: openstack

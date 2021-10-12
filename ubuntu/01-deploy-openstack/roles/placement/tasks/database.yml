@@ -1,0 +1,32 @@
+---
+- name: Create the placement database
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: placement
+    state: present
+    login_user: root
+    login_password: "{{ db_root_pass }}"
+  tags: placement-database
+
+- name: Grant proper access to the database - localhost
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: placement
+    password: "{{ PLACEMENT_DBPASS }}"
+    host: localhost
+    state: present
+    update_password: on_create
+    priv: 'placement.*:ALL'
+  tags: privileges-placement-user
+
+- name: Grant proper access to the database - other hosts
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: placement
+    password: "{{ PLACEMENT_DBPASS }}"
+    host: '%'
+    state: present
+    priv: 'placement.*:ALL'
+  tags: privileges-placement-user
+
+...  

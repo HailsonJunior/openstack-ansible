@@ -1,0 +1,60 @@
+---
+- name: Install placement-api
+  apt:
+    name: placement-api
+    state: latest
+  tags: install-placement-api
+
+- name: Configure placement_database section
+  replace:
+    path: /etc/placement/placement.conf
+    regexp: 'connection = sqlite:////var/lib/placement/placement.sqlite'
+    replace: 'connection = mysql+pymysql://placement:{{ PLACEMENT_DBPASS }}@controller/placement'
+  tags: conf-placementdb-section
+
+- name: Comment api section
+  replace:
+    path: /etc/placement/placement.conf
+    regexp: '^\[api\]$'
+    replace: '#[api]'
+  tags: comment-api-section
+
+- name: Configure api section
+  lineinfile:
+    path: /etc/placement/placement.conf
+    line: '[api]'
+  tags: conf-api-section
+
+- name: Configure api section
+  lineinfile:
+    path: /etc/placement/placement.conf
+    line: 'auth_strategy = keystone'
+  tags: conf-api-section
+
+- name: Configure keystone_authtoken section
+  blockinfile:
+    path: /etc/placement/placement.conf
+    insertafter: '^\[keystone_authtoken\]$'
+    block: |
+      auth_url = http://controller:5000/v3
+      memcached_servers = controller:11211
+      auth_type = password
+      project_domain_name = Default
+      user_domain_name = Default
+      project_name = service
+      username = placement
+      password = {{ PLACEMENT_PASS }}
+  tags: conf-keystone-section
+
+- name: Populate the placement database
+  shell: 'su -s /bin/sh -c "placement-manage db sync" placement'
+  tags: populate-placement-db
+
+- name: Restart apache2 service
+  service: 
+    name: apache2
+    state: restarted
+    enabled: yes
+  tags: restart-apache2
+
+...  

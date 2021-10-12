@@ -1,0 +1,26 @@
+---
+- name: Create a Placement service
+  shell: openstack user create --domain default --password {{ PLACEMENT_PASS }} placement
+  tags: create-placement-user
+
+- name: Add the Placement user to the service project with the admin role
+  shell: openstack role add --project service --user placement admin
+  tags: adduser-service-project
+
+- name: Create the Placement API entry in the service catalog
+  shell: 'openstack service create --name placement --description "Placement API" placement'
+  tags: create-placement-api-entry
+
+- name: Create the Placement API service endpoints - public
+  shell: openstack endpoint create --region RegionOne placement public http://controller:8778
+  tags: create-placement-apiservice-endpoints
+
+- name: Create the Placement API service endpoints - internal
+  shell: openstack endpoint create --region RegionOne placement internal http://controller:8778
+  tags: create-placement-apiservice-endpoints
+
+- name: Create the Placement API service endpoints - admin
+  shell: openstack endpoint create --region RegionOne placement admin http://controller:8778
+  tags: create-placement-apiservice-endpoints
+
+...  

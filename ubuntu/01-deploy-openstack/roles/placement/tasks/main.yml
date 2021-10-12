@@ -1,0 +1,7 @@
+---
+- include: database.yml
+- include: user-and-endpoints.yml
+- include: install-and-configure.yml
+- include: verify-placement-service.yml
+
+...  

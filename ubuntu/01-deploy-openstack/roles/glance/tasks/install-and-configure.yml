@@ -28,14 +28,26 @@
       password = {{ GLANCE_PASS }}
   tags: keystone-section
 
+- name: Comment paste deploy section
+  replace:
+    path: /etc/glance/glance-api.conf
+    regexp: '^\[paste_deploy\]$'
+    replace: '#[paste_deploy]'
+  tags: comment-glance-deploy
+
+- name: Config paste deploy section
+  lineinfile:
+    path: /etc/glance/glance-api.conf
+    line: '[paste_deploy]'
+  tags: paste-deploy
+
 - name: Config paste deploy section
   lineinfile:
     path: /etc/glance/glance-api.conf
     line: 'flavor = keystone'
-    insertafter: '[paste_deploy]'
   tags: paste-deploy
 
-- name: Coment glance store section
+- name: Comment glance store section
   replace:
     path: /etc/glance/glance-api.conf
     regexp: '^\[glance_store\]$'

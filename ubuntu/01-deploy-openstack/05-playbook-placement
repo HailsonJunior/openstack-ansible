@@ -1,0 +1,9 @@
+--- # https://docs.openstack.org/placement/wallaby/install
+- name: Install and configure placement service
+  hosts: 'controller'
+  become: yes
+  become_method: sudo
+  roles:
+    - { role: placement, tags: ["placement"]}
+
+...      
