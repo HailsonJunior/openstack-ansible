@@ -5,5 +5,10 @@ NOVA_DBPASS: openstack
 
 # Other passwords
 NOVA_PASS: openstack
+RABBIT_PASS: openstack
+PLACEMENT_PASS: openstack
+
+# Nodes iPs
+ip_controller: 172.31.92.40
 
 ...

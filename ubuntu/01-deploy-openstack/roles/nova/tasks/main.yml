@@ -2,5 +2,6 @@
 - include: database.yml
 - include: service-credentials.yml
 - include: install-and-configure.yml  
+- include: finalize-instalation.yml
 
 ...  

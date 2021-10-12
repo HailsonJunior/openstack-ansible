@@ -6,6 +6,7 @@
     state: present
     login_user: root
     login_password: "{{ db_root_pass }}"
+  when: "'node1' in inventory_hostname"
   tags: create-nova-api-database
 
 - name: Create the nova database
@@ -15,6 +16,7 @@
     state: present
     login_user: root
     login_password: "{{ db_root_pass }}"
+  when: "'node1' in inventory_hostname"
   tags: create-nova-database
 
 - name: Create the nova_cell0 database
@@ -24,67 +26,38 @@
     state: present
     login_user: root
     login_password: "{{ db_root_pass }}"
+  when: "'node1' in inventory_hostname"
   tags: create-nova-cell0-database
 
-- name: Grant proper access to the database nova_api - localhost
+- name: Grant proper access to the databases - localhost
   mysql_user:
     login_unix_socket: /var/run/mysqld/mysqld.sock
     name: nova
     password: "{{ NOVA_DBPASS }}"
-    host: localhost
     state: present
-    update_password: on_create
-    priv: 'nova_api.*:ALL'
-  tags: privileges-nova-api-db
+    append_privs: yes
+    priv: "{{item}}"
+  with_items:
+    - 'nova_api.*:ALL'
+    - 'nova.*:ALL'
+    - 'nova_cell0.*:ALL'
+  when: "'node1' in inventory_hostname"
+  tags: privileges-all-db
 
-- name: Grant proper access to the database nova_api - other hosts
+- name: Grant proper access to the databases - other hosts
   mysql_user:
     login_unix_socket: /var/run/mysqld/mysqld.sock
     name: nova
     password: "{{ NOVA_DBPASS }}"
+    state: present
     host: '%'
-    state: present
-    priv: 'nova_api.*:ALL'
-  tags: privileges-nova-api-db
-
-- name: Grant proper access to the database nova - localhost
-  mysql_user:
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    name: nova
-    password: "{{ NOVA_DBPASS }}"
-    host: localhost
-    state: present
-    priv: 'nova.*:ALL'
-  tags: privileges-nova-db
-
-- name: Grant proper access to the database nova - other hosts
-  mysql_user:
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    name: nova
-    password: "{{ NOVA_DBPASS }}"
-    host: '%'
-    state: present
-    priv: 'nova.*:ALL'
-  tags: privileges-nova-db
-
-- name: Grant proper access to the database nova_cell0 - localhost
-  mysql_user:
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    name: nova
-    password: "{{ NOVA_DBPASS }}"
-    host: localhost
-    state: present
-    priv: 'nova_cell0.*:ALL'
-  tags: privileges-nova-cell0-db
-
-- name: Grant proper access to the database nova_cell0 - other hosts
-  mysql_user:
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    name: nova
-    password: "{{ NOVA_DBPASS }}"
-    host: '%'
-    state: present
-    priv: 'nova_cell0.*:ALL'
-  tags: privileges-nova-cell0-db
+    append_privs: yes
+    priv: "{{item}}"
+  with_items:
+    - 'nova_api.*:ALL'
+    - 'nova.*:ALL'
+    - 'nova_cell0.*:ALL'
+  when: "'node1' in inventory_hostname"
+  tags: privileges-all-db
 
 ...  

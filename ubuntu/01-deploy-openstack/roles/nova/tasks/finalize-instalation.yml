@@ -1,0 +1,34 @@
+---
+- name: Restart nova-api service
+  service:
+    name: nova-api
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-nova-api
+
+- name: Restart nova-scheduler service
+  service:
+    name: nova-scheduler
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-nova-scheduler
+
+- name: Restart nova-conductor service
+  service:
+    name: nova-conductor
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-nova-conductor
+
+- name: Restart nova-novncproxy
+  service: 
+    name: nova-novncproxy
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-nova-novncproxy
+
+...  

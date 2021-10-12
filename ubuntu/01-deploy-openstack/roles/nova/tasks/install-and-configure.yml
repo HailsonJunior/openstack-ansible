@@ -7,8 +7,204 @@
       - nova-novncproxy
       - nova-scheduler
     state: latest
+  when: "'node1' in inventory_hostname"
   tags: install-packages
 
-- name: 
+- name: Configure api_database section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: 'connection = sqlite:////var/lib/nova/nova_api.sqlite'
+    replace: 'connection = mysql+pymysql://nova:{{ NOVA_DBPASS }}@controller/nova_api'
+  when: "'node1' in inventory_hostname"
+  tags: conf-api-database-section
+
+- name: Configure database section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: 'connection = sqlite:////var/lib/nova/nova.sqlite'
+    replace: 'connection = mysql+pymysql://nova:{{ NOVA_DBPASS }}@controller/nova'
+  when: "'node1' in inventory_hostname"
+  tags: conf-database-section
+
+- name: Configure default section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'transport_url = rabbit://openstack:{{ RABBIT_PASS }}@controller:5672/'
+    insertafter: '^state_path = /var/lib/nova'
+  when: "'node1' in inventory_hostname"
+  tags: conf-database-section
+
+- name: Comment api section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[api\]$'
+    replace: '#[api]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-api-section
+
+- name: Configure api section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: '[api]'
+  when: "'node1' in inventory_hostname"
+  tags: conf-api-section
+
+- name: Configure api section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'auth_strategy = keystone'
+  when: "'node1' in inventory_hostname"
+  tags: conf-api-section
+
+- name: Configure keystone_authtoken section
+  blockinfile:
+    path: /etc/nova/nova.conf
+    insertafter: '^\[keystone_authtoken\]$'
+    block: |
+      www_authenticate_uri = http://controller:5000/
+      auth_url = http://controller:5000/
+      memcached_servers = controller:11211
+      auth_type = password
+      project_domain_name = Default
+      user_domain_name = Default
+      project_name = service
+      username = nova
+      password = {{ NOVA_PASS }}
+  when: "'node1' in inventory_hostname"
+  tags: conf-keystone-section
+
+- name: Configure default
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'my_ip = {{ ip_controller }}'
+    insertafter: '^transport_url = rabbit://openstack:{{ RABBIT_PASS }}@controller:5672/'
+  when: "'node1' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Comment vnc section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[vnc\]$'
+    replace: '#[vnc]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-vnc-section
+
+- name: Configure vnc section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: '[vnc]'
+  when: "'node1' in inventory_hostname"
+  tags: conf-vnc-section
+
+- name: Configure vnc section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'enabled = true'
+  when: "'node1' in inventory_hostname"
+  tags: conf-vnc-section
+
+- name: Configure vnc section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'server_listen = $my_ip'
+  when: "'node1' in inventory_hostname"
+  tags: conf-vnc-section
+
+- name: Configure vnc section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'server_proxyclient_address = $my_ip'
+  when: "'node1' in inventory_hostname"
+  tags: conf-vnc-section
+
+- name: Comment glance section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[glance\]$'
+    replace: '#[glance]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-glance-section
+
+- name: Configure glance section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: '[glance]'
+  when: "'node1' in inventory_hostname"
+  tags: conf-glance-section
+
+- name: Configure glance section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'api_servers = http://controller:9292'
+  when: "'node1' in inventory_hostname"
+  tags: conf-glance-section
+
+- name: Comment oslo_concurrency section
+  replace: 
+    path: /etc/nova/nova.conf
+    regexp: '^\[oslo_concurrency\]$'
+    replace: '#[oslo_concurrency]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-oslo-concurrency-section
+
+- name: Configure oslo_concurrency section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: '[oslo_concurrency]'
+  when: "'node1' in inventory_hostname"
+  tags: configure-oslo-concurrency-section
+
+- name: Configure oslo_concurrency section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'lock_path = /var/lib/nova/tmp'
+  when: "'node1' in inventory_hostname"
+  tags: configure-oslo-concurrency-section
+
+- name: Comment placement section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[placement\]$'
+    replace: '#[placement]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-placement-section
+
+- name: Configure placement section
+  shell: echo -e "\n[placement]\nregion_name = RegionOne\nproject_domain_name = Default\nproject_name = service\nauth_type = password\nuser_domain_name = Default\nauth_url = http://controller:5000/v3\nusername = placement\npassword = {{ PLACEMENT_PASS }}" >> /etc/nova/nova.conf
+  when: "'node1' in inventory_hostname"
+  tags: conf-placement-section
+
+- name: Remove wrong line
+  lineinfile:
+    path: /etc/nova/nova.conf
+    regexp: '^-e'
+    state: absent
+  when: "'node1' in inventory_hostname"
+  tags: absent-line
+
+- name: Populate the nova-api database
+  shell: 'su -s /bin/sh -c "nova-manage api_db sync" nova'
+  when: "'node1' in inventory_hostname"
+  tags: populate-nova-api-db
+
+- name: Register the cell0 database
+  shell: 'su -s /bin/sh -c "nova-manage cell_v2 map_cell0" nova'
+  when: "'node1' in inventory_hostname"
+  tags: register-cell0-db
+
+- name: Create the cell1 cell
+  shell: 'su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova'
+  when: "'node1' in inventory_hostname"
+  tags: create-cell1-cell
+
+- name: Populate the nova database
+  shell: 'su -s /bin/sh -c "nova-manage db sync" nova'
+  when: "'node1' in inventory_hostname"
+  tags: populate-nova-db
+
+- name: Verify nova cell0 and cell1 are registered correctly
+  shell: 'su -s /bin/sh -c "nova-manage cell_v2 list_cells" nova'
+  when: "'node1' in inventory_hostname"
+  tags: verify-nova-cell
 
 ...  
