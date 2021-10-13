@@ -1,0 +1,115 @@
+---
+- name: Install nova-compute
+  apt:
+    name: nova-compute
+    state: latest
+  when: "'node2' in inventory_hostname"
+  tags: install-nova-compute
+
+- name: Configure default section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'transport_url = rabbit://openstack:{{ RABBIT_PASS }}@controller'
+    insertafter: '^state_path = /var/lib/nova'
+  when: "'node2' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Comment api section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[api\]$'
+    replace: '#[api]'
+  when: "'node2' in inventory_hostname"
+  tags: comment-api-section
+
+- name: Configure api section
+  shell: 'echo -e "\n\n[api]\nauth_strategy = keystone\n" >> /etc/nova/nova.conf'
+  when: "'node2' in inventory_hostname"
+  tags: conf-api-section
+
+- name: Configure keystone_authtoken section
+  blockinfile:
+    path: /etc/nova/nova.conf
+    insertafter: '^\[keystone_authtoken\]$'
+    block: |
+      www_authenticate_uri = http://controller:5000/
+      auth_url = http://controller:5000/
+      memcached_servers = controller:11211
+      auth_type = password
+      project_domain_name = Default
+      user_domain_name = Default
+      project_name = service
+      username = nova
+      password = {{ NOVA_PASS }}
+  when: "'node2' in inventory_hostname"
+  tags: conf-keystone-section
+
+- name: Configure default section
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'my_ip = {{ ip_compute }}'
+    insertafter: '^transport_url = rabbit://openstack:{{ RABBIT_PASS }}@controller'
+  when: "'node2' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Comment vnc section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[vnc\]'
+    replace: '#[vnc]'
+  when: "'node2' in inventory_hostname"
+  tags: comment-vnc-section
+
+- name: Configure vnc section
+  shell: 'echo -e "\n[vnc]\nenabled = true\nserver_listen = 0.0.0.0\nserver_proxyclient_address = \$my_ip\nnovncproxy_base_url = http://{{ ip_controller }}:6080/vnc_auto.html\n" >> /etc/nova/nova.conf'
+  when: "'node2' in inventory_hostname"
+  tags: conf-vnc-section
+
+- name: Comment glance section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[glance\]$'
+    replace: '#[glance]'
+  when: "'node2' in inventory_hostname"
+  tags: comment-glance-section
+
+- name: Configure glance section
+  shell: 'echo -e "\n[glance]\napi_servers = http://controller:9292\n" >> /etc/nova/nova.conf'
+  when: "'node2' in inventory_hostname"
+  tags: conf-glance-section
+
+- name: Comment oslo_concurrency section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[oslo_concurrency\]$'
+    replace: '#[oslo_concurrency]'
+  when: "'node2' in inventory_hostname"
+  tags: comment-oslo-concurrency-section
+
+- name: Configure oslo_concurrency section
+  shell: 'echo -e "\n[oslo_concurrency]\nlock_path = /var/lib/nova/tmp\n" >> /etc/nova/nova.conf'
+  when: "'node2' in inventory_hostname"
+  tags: conf-oslo-concurrency-section
+
+- name: Comment placement section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[placement\]$'
+    replace: '#[placement]'
+  when: "'node2' in inventory_hostname"
+  tags: comment-placement-section
+
+- name: Configure placement section
+  shell: 'echo -e "\n[placement]\nregion_name = RegionOne\nproject_domain_name = Default\nproject_name = service\nauth_type = password\nuser_domain_name = Default\nauth_url = http://controller:5000/v3\nusername = placement\npassword = {{ PLACEMENT_PASS }}" >> /etc/nova/nova.conf'
+  when: "'node2' in inventory_hostname"
+  tags: conf-placement-section
+
+- name: Remove wrong lines
+  lineinfile:
+    path: /etc/nova/nova.conf
+    regexp: '^-e'
+    state: absent
+  when: "'node2' in inventory_hostname"
+  tags: absent-line
+
+...  

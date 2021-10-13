@@ -1,0 +1,48 @@
+---
+- name: Configure libvirt section
+  replace:
+    path: /etc/nova/nova-compute.conf
+    regexp: '^virt_type=kvm'
+    replace: 'virt_type = qemu'
+  when: "'node2' in inventory_hostname"
+  tags: conf-libvirt-section
+
+- name: Restart nova-compute service
+  service:
+    name: nova-compute
+    state: restarted
+    enabled: yes
+  when: "'node2' in inventory_hostname"
+  tags: restart-nova-compute
+
+- name: Confirm there are compute hosts in the database
+  shell: 'openstack compute service list --service nova-compute'
+  when: "'node1' in inventory_hostname"
+  tags: confirm-compute-hosts
+
+- name: Discover compute hosts
+  shell: 'su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova'
+  when: "'node1' in inventory_hostname"
+  tags: discover-compute-hosts
+
+- name: Comment scheduler section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[scheduler\]$'
+    replace: '#[scheduler]'
+  when: "'node1' in inventory_hostname"
+
+- name: Configure scheduler
+  shell: 'echo -e "\n[scheduler]\ndiscover_hosts_in_cells_interval = 300\n"'
+  when: "'node1' in inventory_hostname"
+  tags: conf-scheduler
+
+- name: Remove wrong lines
+  lineinfile:
+    path: /etc/nova/nova.conf
+    regexp: '^-e'
+    state: absent
+  when: "'node1' in inventory_hostname"
+  tags: absent-line
+
+...  

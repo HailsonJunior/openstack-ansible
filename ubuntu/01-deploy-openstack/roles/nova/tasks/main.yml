@@ -1,7 +1,10 @@
 ---
-- include: database.yml
-- include: service-credentials.yml
-- include: install-and-configure.yml  
-- include: finalize-instalation.yml
+- include: controller-database.yml
+- include: controller-service-credentials.yml
+- include: controller-install-and-configure.yml  
+- include: controller-finalize-installation.yml
+- include: compute-install-and-configure.yml
+- include: compute-finalize-installation.yml
+- include: verify-operation.yml
 
 ...  

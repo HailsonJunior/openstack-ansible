@@ -43,16 +43,7 @@
   tags: comment-api-section
 
 - name: Configure api section
-  lineinfile:
-    path: /etc/nova/nova.conf
-    line: '[api]'
-  when: "'node1' in inventory_hostname"
-  tags: conf-api-section
-
-- name: Configure api section
-  lineinfile:
-    path: /etc/nova/nova.conf
-    line: 'auth_strategy = keystone'
+  shell: 'echo -e "\n\n[api]\nauth_strategy = keystone\n" >> /etc/nova/nova.conf'
   when: "'node1' in inventory_hostname"
   tags: conf-api-section
 
@@ -90,30 +81,7 @@
   tags: comment-vnc-section
 
 - name: Configure vnc section
-  lineinfile:
-    path: /etc/nova/nova.conf
-    line: '[vnc]'
-  when: "'node1' in inventory_hostname"
-  tags: conf-vnc-section
-
-- name: Configure vnc section
-  lineinfile:
-    path: /etc/nova/nova.conf
-    line: 'enabled = true'
-  when: "'node1' in inventory_hostname"
-  tags: conf-vnc-section
-
-- name: Configure vnc section
-  lineinfile:
-    path: /etc/nova/nova.conf
-    line: 'server_listen = $my_ip'
-  when: "'node1' in inventory_hostname"
-  tags: conf-vnc-section
-
-- name: Configure vnc section
-  lineinfile:
-    path: /etc/nova/nova.conf
-    line: 'server_proxyclient_address = $my_ip'
+  shell: 'echo -e "\n[vnc]\nenabled = true\nserver_listen = 0.0.0.0\nserver_proxyclient_address = \$my_ip\nnovncproxy_base_url = http://{{ ip_controller }}:6080/vnc_auto.html\n" >> /etc/nova/nova.conf'
   when: "'node1' in inventory_hostname"
   tags: conf-vnc-section
 
@@ -126,16 +94,7 @@
   tags: comment-glance-section
 
 - name: Configure glance section
-  lineinfile:
-    path: /etc/nova/nova.conf
-    line: '[glance]'
-  when: "'node1' in inventory_hostname"
-  tags: conf-glance-section
-
-- name: Configure glance section
-  lineinfile:
-    path: /etc/nova/nova.conf
-    line: 'api_servers = http://controller:9292'
+  shell: 'echo -e "\n[glance]\napi_servers = http://controller:9292\n" >> /etc/nova/nova.conf'
   when: "'node1' in inventory_hostname"
   tags: conf-glance-section
 
@@ -148,16 +107,7 @@
   tags: comment-oslo-concurrency-section
 
 - name: Configure oslo_concurrency section
-  lineinfile:
-    path: /etc/nova/nova.conf
-    line: '[oslo_concurrency]'
-  when: "'node1' in inventory_hostname"
-  tags: configure-oslo-concurrency-section
-
-- name: Configure oslo_concurrency section
-  lineinfile:
-    path: /etc/nova/nova.conf
-    line: 'lock_path = /var/lib/nova/tmp'
+  shell: 'echo -e "\n[oslo_concurrency]\nlock_path = /var/lib/nova/tmp\n" >> /etc/nova/nova.conf'
   when: "'node1' in inventory_hostname"
   tags: configure-oslo-concurrency-section
 

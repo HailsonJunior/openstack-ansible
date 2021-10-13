@@ -1,0 +1,22 @@
+---
+- name: List service components to verify successful launch and registration of each process
+  shell: 'openstack compute service list'
+  when: "'node1' in inventory_hostname"
+  tags: list-service-components
+
+- name: List API endpoints in the Identity service to verify connectivity with the Identity service01~
+  shell: 'openstack catalog list'
+  when: "'node1' in inventory_hostname"
+  tags: list-api-endpoints
+
+- name: List images in the Image service to verify connectivity with the Image service
+  shell: 'openstack image list'
+  when: "'node1' in inventory_hostname"
+  tags: list-images
+
+- name: Check the cells and placement API are working successfully and that other necessary prerequisites are in place
+  shell: 'nova-status upgrade check'
+  when: "'node1' in inventory_hostname"
+  tags: nova-status
+
+...  
