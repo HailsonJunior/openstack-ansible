@@ -1,0 +1,92 @@
+---
+- name: Configure default section - nova_metadata_host
+  lineinfile:
+    path: /etc/neutron/metadata_agent.ini
+    line: 'nova_metadata_host = controller'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Configure default section - metadata_proxy_shared_secret
+  lineinfile:
+    path: /etc/neutron/metadata_agent.ini
+    line: 'metadata_proxy_shared_secret = {{ METADATA_SECRET }}'
+    insertafter: '^nova_metadata_host = controller'
+  when: "'node1' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Comment neutron section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[neutron\]$'
+    replace: '#[neutron]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-neutron-section
+
+- name: Configure neutron section
+  shell: 'echo -e "\n\n[neutron]\nauth_url = http://controller:5000\nauth_type = password\nproject_domain_name = default\nuser_domain_name = default\nregion_name = RegionOne\nproject_name = service\nusername = neutron\npassword = {{ NEUTRON_PASS }}\nservice_metadata_proxy = true\nmetadata_proxy_shared_secret = {{ METADATA_SECRET }}" >> /etc/nova/nova.conf'
+  when: "'node1' in inventory_hostname"
+  tags: conf-neutron-section
+
+- name: Remove -e lines
+  lineinfile:
+    path: /etc/nova/nova.conf
+    regexp: '^-e'
+    state: absent
+  when: "'node1' in inventory_hostname"
+  tags: remove-lines
+
+- name: Populate the database
+  shell: 'su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron'
+  when: "'node1' in inventory_hostname"
+  tags: populate-database
+
+- name: Restart nova-api service
+  service:
+    name: nova-api
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-nova-api
+
+- name: Restart neutron-server
+  service:
+    name: neutron-server
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-neutron-server
+
+- name: Restart neutron-linuxbridge-agent service
+  service:
+    name: neutron-linuxbridge-agent
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-neutron-linuxbridge-agent
+
+- name: Restart neutron-dhcp-agent service
+  service:
+    name: neutron-dhcp-agent
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-neutron-dhcp-agent
+
+- name: Restart neutron-metadata-agent service
+  service:
+    name: neutron-metadata-agent
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-neutron-metadata-agent
+
+- name: Restart neutron-l3-agent service
+  service:
+    name: neutron-l3-agent
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-neutron-l3-agent
+
+...  

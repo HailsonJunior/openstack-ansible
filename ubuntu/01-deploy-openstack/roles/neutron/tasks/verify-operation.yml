@@ -1,0 +1,12 @@
+---
+- name: List loaded extensions to verify successful launch of the neutron-server process
+  shell: 'openstack extension list --network'
+  when: "'node1' in inventory_hostname"
+  tags: list-extensions
+
+- name: List agents to verify successful launch of the neutron agents
+  shell: 'openstack network agent list'
+  when: "'node1' in inventory_hostname"
+  tags: list-agents
+
+...  

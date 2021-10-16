@@ -1,0 +1,50 @@
+---
+- name: Install neutron-linuxbridge-agent
+  apt:
+    name: neutron-linuxbridge-agent
+    state: latest
+  when: "'node2' in inventory_hostname"
+  tags: install-neutron-linuxbridge-agent
+
+- name: Configure default section - transport_url
+  lineinfile:
+    path: /etc/neutron/neutron.conf
+    line: 'transport_url = rabbit://openstack:{{ RABBIT_PASS }}@controller'
+    insertafter: '^core_plugin = ml2'
+  when: "'node2' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Configure default section - auth_strategy
+  lineinfile:
+    path: /etc/neutron/neutron.conf
+    line: 'auth_strategy = keystone'
+    insertafter: '^transport_url = rabbit://openstack:{{ RABBIT_PASS }}@controller'
+  when: "'node2' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Configure keystone_authtoken section
+  blockinfile:
+    path: /etc/neutron/neutron.conf
+    insertafter: '^\[keystone_authtoken\]$'
+    block: |
+      www_authenticate_uri = http://controller:5000
+      auth_url = http://controller:5000
+      memcached_servers = controller:11211
+      auth_type = password
+      project_domain_name = default
+      user_domain_name = default
+      project_name = service
+      username = neutron
+      password = {{ NEUTRON_PASS }}
+  when: "'node2' in inventory_hostname"
+  tags: conf-keystone-authtoken
+
+- name: Configure oslo_concurrency section
+  lineinfile:
+    path: /etc/neutron/neutron.conf
+    line: 'lock_path = /var/lib/neutron/tmp'
+    insertafter: '^\[oslo_concurrency\]$'
+  when: "'node2' in inventory_hostname"
+  tags: conf-oslo-concurrency
+
+...  

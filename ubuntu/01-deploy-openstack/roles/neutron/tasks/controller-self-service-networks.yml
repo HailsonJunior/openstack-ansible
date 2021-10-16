@@ -1,0 +1,229 @@
+---
+- name: Install components
+  apt:
+    name:
+      - neutron-server
+      - neutron-plugin-ml2
+      - neutron-linuxbridge-agent
+      - neutron-l3-agent
+      - neutron-dhcp-agent
+      - neutron-metadata-agent
+    state: latest
+  when: "'node1' in inventory_hostname"
+  tags: install-components
+
+- name: Configure database section
+  replace:
+    path: /etc/neutron/neutron.conf
+    regexp: 'connection = sqlite:////var/lib/neutron/neutron.sqlite'
+    replace: 'connection = mysql+pymysql://neutron:{{ NEUTRON_DBPASS }}@controller/neutron'
+  when: "'node1' in inventory_hostname"
+  tags: conf-database-section
+
+- name: Configure default section - service_plugins
+  lineinfile:
+    path: /etc/neutron/neutron.conf
+    line: 'service_plugins = router'
+    insertafter: '^core_plugin = ml2'
+  when: "'node1' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Configure default section - allow_overlapping_ips
+  lineinfile:
+    path: /etc/neutron/neutron.conf
+    line: 'allow_overlapping_ips = true'
+    insertafter: '^service_plugins = router'
+  when: "'node1' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Configure default section - transport_url
+  lineinfile:
+    path: /etc/neutron/neutron.conf
+    line: 'transport_url = rabbit://openstack:{{ RABBIT_PASS }}@controller'
+    insertafter: '^allow_overlapping_ips = true'
+  when: "'node1' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Configure default section - auth_strategy
+  lineinfile:
+    path: /etc/neutron/neutron.conf
+    line: 'auth_strategy = keystone'
+    insertafter: '^transport_url = rabbit://openstack:{{ RABBIT_PASS }}@controller'
+  when: "'node1' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Configure default section - notify_nova_on_port_status_changes
+  lineinfile:
+    path: /etc/neutron/neutron.conf
+    line: 'notify_nova_on_port_status_changes = true'
+    insertafter: '^auth_strategy = keystone'
+  when: "'node1' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Configure default section - notify_nova_on_port_data_changes
+  lineinfile:
+    path: /etc/neutron/neutron.conf
+    line: 'notify_nova_on_port_data_changes = true'
+    insertafter: '^notify_nova_on_port_status_changes = true'
+  when: "'node1' in inventory_hostname"
+  tags: conf-default-section
+
+- name: Configure keystone_authtoken section
+  blockinfile:
+    path: /etc/neutron/neutron.conf
+    insertafter: '^\[keystone_authtoken\]$'
+    block: |
+      www_authenticate_uri = http://controller:5000
+      auth_url = http://controller:5000
+      memcached_servers = controller:11211
+      auth_type = password
+      project_domain_name = default
+      user_domain_name = default
+      project_name = service
+      username = neutron
+      password = {{ NEUTRON_PASS }}
+  when: "'node1' in inventory_hostname"
+  tags: conf-keystone-authtoken-section
+
+- name: Comment nova section
+  replace:
+    path: /etc/neutron/neutron.conf
+    regexp: '^\[nova\]$'
+    replace: '#[nova]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-nova-section
+
+- name: Configure nova section
+  shell: 'echo -e "\n\n[nova]\nauth_url = http://controller:5000\nauth_type = password\nproject_domain_name = default\nuser_domain_name = default\nregion_name = RegionOne\nproject_name = service\nusername = nova\npassword = {{ NOVA_PASS }}\n" >> /etc/neutron/neutron.conf'
+  when: "'node1' in inventory_hostname"
+  tags: conf-nova-section
+
+- name: Comment oslo_concurrency section
+  replace:
+    path: /etc/neutron/neutron.conf
+    regexp: '^\[oslo_concurrency\]$'
+    replace: '#[oslo_concurrency]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-oslo-concurrency-section
+
+- name: Configure oslo_concurrency section
+  shell: 'echo -e "\n[oslo_concurrency]\nlock_path = /var/lib/neutron/tmp\n" >> /etc/neutron/neutron.conf'
+  when: "'node1' in inventory_hostname"
+  tags: conf-oslo-concurrency-section
+
+- name: Comment ml2 section
+  replace:
+    path: /etc/neutron/plugins/ml2/ml2_conf.ini
+    regexp: '^\[ml2\]$'
+    replace: '#[ml2]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-ml2-section
+
+- name: Configure ml2 section
+  shell: 'echo -e "\n[ml2]\ntype_drivers = flat,vlan,vxlan\ntenant_network_types = vxlan\nmechanism_drivers = linuxbridge,l2population\nextension_drivers = port_security\n" >> /etc/neutron/plugins/ml2/ml2_conf.ini'
+  when: "'node1' in inventory_hostname"
+  tags: conf-ml2-section
+
+- name: Configure ml2_type_flat section
+  lineinfile:
+    path: /etc/neutron/plugins/ml2/ml2_conf.ini
+    line: 'flat_networks = provider'
+    insertafter: '^\[ml2_type_flat\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-ml2-type-flat-section
+
+- name: Configure ml2_type_vxlan section
+  lineinfile:
+    path: /etc/neutron/plugins/ml2/ml2_conf.ini
+    line: 'vni_ranges = 1:1000'
+    insertafter: '^\[ml2_type_vxlan\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-ml2-type-vxlan
+
+- name: Configure securitygroup
+  lineinfile:
+    path: /etc/neutron/plugins/ml2/ml2_conf.ini
+    line: 'enable_ipset = true'
+    insertafter: '^\[securitygroup\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-securitygroup-section
+
+- name: Configure linux_bridge section
+  lineinfile:
+    path: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+    line: 'physical_interface_mappings = provider:{{ PROVIDER_INTERFACE_NAME }}'
+    insertafter: '^\[linux_bridge\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-linux-bridge-section
+
+- name: Comment vxlan section
+  replace:
+    path: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+    regexp: '^\[vxlan\]$'
+    replace: '#[vxlan]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-vxlan-section
+
+- name: Configure vxlan section
+  shell: 'echo -e "\n\n[vxlan]\nenable_vxlan = true\nlocal_ip = {{ ip_controller }}\nl2_population = true\n" >> /etc/neutron/plugins/ml2/linuxbridge_agent.ini'
+  when: "'node1' in inventory_hostname"
+  tags: conf-vxlan-section
+
+- name: Comment securitygroup section
+  replace:
+    path: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+    regexp: '^\[securitygroup\]$'
+    replace: '#[securitygroup]'
+  when: "'node1' in inventory_hostname"
+  tags: comment-securitygroup-section
+
+- name: Configure securitygroup section
+  shell: 'echo -e "\n[securitygroup]\nenable_security_group = true\nfirewall_driver = neutron.agent.linux.iptables_firewall.IptablesFirewallDriver" >> /etc/neutron/plugins/ml2/linuxbridge_agent.ini'
+  when: "'node1' in inventory_hostname"
+  tags: conf-securitygroup-section
+
+- name: Remove -e lines
+  lineinfile:
+    path: "{{item}}"
+    regexp: '^-e'
+    state: absent
+  loop:
+    - /etc/neutron/neutron.conf
+    - /etc/neutron/plugins/ml2/ml2_conf.ini
+    - /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+  when: "'node1' in inventory_hostname"
+  tags: remove-lines
+
+- name: Configure the layer-3 agent
+  lineinfile:
+    path: /etc/neutron/l3_agent.ini
+    line: 'interface_driver = linuxbridge'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-layer3-agent
+
+- name: Configure the DHCP agent - interface_driver
+  lineinfile:
+    path: /etc/neutron/dhcp_agent.ini
+    line: 'interface_driver = linuxbridge'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-dhcp-agent
+
+- name: Configure the DHCP agent - dhcp_driver
+  lineinfile:
+    path: /etc/neutron/dhcp_agent.ini
+    line: 'dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq'
+    insertafter: '^interface_driver = linuxbridge'
+  when: "'node1' in inventory_hostname"
+  tags: conf-dhcp-agent
+
+- name: Configure the DHCP agent -  enable_isolated_metadata 
+  lineinfile:
+    path: /etc/neutron/dhcp_agent.ini
+    line: 'enable_isolated_metadata = true'
+    insertafter: '^dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq'
+  when: "'node1' in inventory_hostname"
+  tags: conf-dhcp-agent
+
+...  

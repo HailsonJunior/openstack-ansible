@@ -1,0 +1,11 @@
+---
+- include: controller-database.yml
+- include: controller-service-credentials.yml
+- include: controller-self-service-networks.yml
+- include: controller-finalize-instalation.yml
+- include: compute-install-and-configure.yml
+- include: compute-self-service-networks.yml
+- include: compute-finalize-instalation.yml
+- include: verify-operation.yml
+
+...

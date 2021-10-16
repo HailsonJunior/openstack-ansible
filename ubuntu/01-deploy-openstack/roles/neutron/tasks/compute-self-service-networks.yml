@@ -1,0 +1,44 @@
+---
+- name: Configure the Linux bridge agent
+  lineinfile:
+    path: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+    line: 'physical_interface_mappings = provider:{{ PROVIDER_INTERFACE_NAME }}'
+    insertafter: '^\[linux_bridge\]$'
+  when: "'node2' in inventory_hostname"
+  tags: conf-linux-bridge
+
+- name: Comment vxlan section
+  replace:
+    path: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+    regexp: '^\[vxlan\]$'
+    replace: '#[vxlan]'
+  when: "'node2' in inventory_hostname"
+  tags: comment-vxlan-section
+
+- name: Configure vxlan section
+  shell: 'echo -e "\n\n[vxlan]\nenable_vxlan = true\nlocal_ip = {{ ip_compute }}\nl2_population = true\n" >> /etc/neutron/plugins/ml2/linuxbridge_agent.ini'
+  when: "'node2' in inventory_hostname"
+  tags: conf-vxlan-section
+
+- name: Comment securitygroup section
+  replace:
+    path: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+    regexp: '^\[securitygroup\]$'
+    replace: '#[securitygroup]'
+  when: "'node2' in inventory_hostname"
+  tags: comment-securitygroup-section
+
+- name: Configure securitygroup section
+  shell: 'echo -e "\n[securitygroup]\nenable_security_group = true\nfirewall_driver = neutron.agent.linux.iptables_firewall.IptablesFirewallDriver" >> /etc/neutron/plugins/ml2/linuxbridge_agent.ini'
+  when: "'node2' in inventory_hostname"
+  tags: conf-securitygroup-section
+
+- name: remove -e lines
+  lineinfile:
+    path: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+    regexp: '^-e'
+    state: absent
+  when: "'node2' in inventory_hostname"
+  tags: remove-lines
+
+...  

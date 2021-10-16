@@ -1,0 +1,19 @@
+---
+# Databases Pass
+db_root_pass: openstack
+NEUTRON_DBPASS: openstack
+
+# Other passwords
+NEUTRON_PASS: openstack
+NOVA_PASS: openstack
+RABBIT_PASS: openstack
+METADATA_SECRET: openstack
+
+# Physical interface mappings
+PROVIDER_INTERFACE_NAME: eth0
+
+# IP nodes
+ip_controller: 172.31.85.12
+ip_compute: 172.31.87.229
+
+...

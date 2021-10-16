@@ -1,0 +1,35 @@
+---
+- name: Create the neutron database
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: neutron
+    state: present
+    login_user: root
+    login_password: "{{ db_root_pass }}"
+  when: "'node1' in inventory_hostname"
+  tags: create-neutron-db
+
+- name: Grant proper access to the neutron database - localhost
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: neutron
+    password: "{{ NEUTRON_DBPASS }}"
+    state: present
+    append_privs: yes
+    priv: 'neutron.*:ALL'
+  when: "'node1' in inventory_hostname"
+  tags: privileges-neutrondb
+
+- name: Grant proper access to the databases - other hosts
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: neutron
+    password: "{{ NEUTRON_DBPASS }}"
+    state: present
+    host: '%'
+    append_privs: yes
+    priv: 'neutron.*:ALL'
+  when: "'node1' in inventory_hostname"
+  tags: privileges-neutrondb
+    
+...

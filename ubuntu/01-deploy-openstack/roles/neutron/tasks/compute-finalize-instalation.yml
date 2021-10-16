@@ -1,0 +1,39 @@
+---
+- name: Comment neutron section
+  replace:
+    path: /etc/nova/nova.conf
+    regexp: '^\[neutron\]$'
+    replace: '#[neutron]'
+  when: "'node2' in inventory_hostname"
+  tags: comment-neutron-section
+
+- name: Configure neutron section
+  shell: 'echo -e "\n\n[neutron]\nauth_url = http://controller:5000\nauth_type = password\nproject_domain_name = default\nuser_domain_name = default\nregion_name = RegionOne\nproject_name = service\nusername = neutron\npassword = {{ NEUTRON_PASS }}" >> /etc/nova/nova.conf'
+  when: "'node2' in inventory_hostname"
+  tags: conf-neutron-section
+
+- name: Remove -e lines
+  lineinfile:
+    path: /etc/nova/nova.conf
+    regexp: '^-e'
+    state: absent
+  when: "'node2' in inventory_hostname"
+  tags: remove-lines
+
+- name: Restart nova-compute service
+  service:
+    name: nova-compute
+    state: restarted
+    enabled: yes
+  when: "'node2' in inventory_hostname"
+  tags: restart-nova-compute
+
+- name: Restart neutron-linuxbridge-agent service
+  service:
+    name: neutron-linuxbridge-agent
+    state: restarted
+    enabled: yes
+  when: "'node2' in inventory_hostname"
+  tags: restart-neutron-linuxbridge-agent
+
+...  
