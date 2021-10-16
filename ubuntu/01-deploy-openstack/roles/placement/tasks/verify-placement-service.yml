@@ -1,25 +1,30 @@
 ---
 - name: Perform status checks to make sure everything is in order
   shell: placement-status upgrade check
+  when: "'node1' in inventory_hostname"
   tags: status-check
 
 - name: Install python3-pip
   apt:
     name: python3-pip
     state: latest
+  when: "'node1' in inventory_hostname"
   tags: install-python3-pip
 
 - name: Install the osc-placement plugin
   pip:
     name: osc-placement
+  when: "'node1' in inventory_hostname"
   tags: install-osc-placement
 
 - name: List available resource classes and traits
   shell: 'openstack --os-placement-api-version 1.2 resource class list --sort-column name'
+  when: "'node1' in inventory_hostname"
   tags: list-available-resources
 
 - name: List available resource classes and traits
   shell: 'openstack --os-placement-api-version 1.6 trait list --sort-column name'
+  when: "'node1' in inventory_hostname"
   tags: list-available-resources
 
 ...  

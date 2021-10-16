@@ -9,7 +9,7 @@ RABBIT_PASS: openstack
 PLACEMENT_PASS: openstack
 
 # Nodes iPs
-ip_controller: 172.31.89.48
-ip_compute: 172.31.81.68
+ip_controller: 172.31.86.216
+ip_compute: 172.31.91.44
 
 ...

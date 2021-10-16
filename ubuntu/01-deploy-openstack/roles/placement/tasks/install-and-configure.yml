@@ -3,6 +3,7 @@
   apt:
     name: placement-api
     state: latest
+  when: "'node1' in inventory_hostname"
   tags: install-placement-api
 
 - name: Configure placement_database section
@@ -10,6 +11,7 @@
     path: /etc/placement/placement.conf
     regexp: 'connection = sqlite:////var/lib/placement/placement.sqlite'
     replace: 'connection = mysql+pymysql://placement:{{ PLACEMENT_DBPASS }}@controller/placement'
+  when: "'node1' in inventory_hostname"
   tags: conf-placementdb-section
 
 - name: Comment api section
@@ -17,18 +19,21 @@
     path: /etc/placement/placement.conf
     regexp: '^\[api\]$'
     replace: '#[api]'
+  when: "'node1' in inventory_hostname"
   tags: comment-api-section
 
 - name: Configure api section
   lineinfile:
     path: /etc/placement/placement.conf
     line: '[api]'
+  when: "'node1' in inventory_hostname"
   tags: conf-api-section
 
 - name: Configure api section
   lineinfile:
     path: /etc/placement/placement.conf
     line: 'auth_strategy = keystone'
+  when: "'node1' in inventory_hostname"
   tags: conf-api-section
 
 - name: Configure keystone_authtoken section
@@ -44,10 +49,12 @@
       project_name = service
       username = placement
       password = {{ PLACEMENT_PASS }}
+  when: "'node1' in inventory_hostname"
   tags: conf-keystone-section
 
 - name: Populate the placement database
   shell: 'su -s /bin/sh -c "placement-manage db sync" placement'
+  when: "'node1' in inventory_hostname"
   tags: populate-placement-db
 
 - name: Restart apache2 service
@@ -55,6 +62,7 @@
     name: apache2
     state: restarted
     enabled: yes
+  when: "'node1' in inventory_hostname"
   tags: restart-apache2
 
 ...  

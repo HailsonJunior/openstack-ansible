@@ -11,7 +11,7 @@ resource "aws_instance" "openstack_hosts_xlarge" {
 
     instance_type = "t2.xlarge"
     ami = var.ami
-    key_name = var.key_pair
+    key_name = "${aws_key_pair.my-key.key_name}"
     security_groups = ["Iac_group"]  
 
     root_block_device {
@@ -39,7 +39,7 @@ resource "aws_instance" "openstack_hosts_medium" {
 
     instance_type = "t2.micro"
     ami = var.ami
-    key_name = var.key_pair
+    key_name = "${aws_key_pair.my-key.key_name}"
     security_groups = ["Iac_group"]  
 
     root_block_device {
@@ -52,4 +52,9 @@ resource "aws_instance" "openstack_hosts_medium" {
       Projeto = "OpenStack"
       Name = "${each.key}: ${lookup(each.value, "name", null)}"
     }
+}
+
+resource "aws_key_pair" "my-key" {
+    key_name = "my-key"
+    public_key = "${file("~/.ssh/id_rsa.pub")}"
 }

@@ -15,9 +15,3 @@ variable "block_type" {
     description = "Block type"
     default = "gp2"
 }
-
-variable "key_pair" {
-    type = string
-    description = "Key pair"
-    default = "IaC"  
-}

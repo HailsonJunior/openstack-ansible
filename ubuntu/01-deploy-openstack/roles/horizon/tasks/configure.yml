@@ -17,7 +17,7 @@
   lineinfile:
     path: /etc/openstack-dashboard/local_settings.py
     line: "ALLOWED_HOSTS = '*'"
-  when: 'node1' in inventory_hostname and test_grep.stdout == "0"
+  when: "'node1' in inventory_hostname and test_grep.stdout == '0'"
   tags: allow-acces-dash
 
 - name: Configure the memcached session storage service - SESSION_ENGINE

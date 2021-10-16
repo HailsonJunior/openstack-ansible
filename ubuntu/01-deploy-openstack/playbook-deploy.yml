@@ -1,6 +1,7 @@
 --- # https://docs.openstack.org/install-guide
 - name: Configure environment
   hosts: 'all'
+  any_errors_fatal: true
   become: yes
   become_method: sudo
   roles:
