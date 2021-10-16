@@ -3,6 +3,7 @@
   apt:
     name: glance
     state: latest
+  when: "'node1' in inventory_hostname"
   tags: install-glance
 
 - name: Config database section
@@ -10,6 +11,7 @@
     path: /etc/glance/glance-api.conf
     regexp: 'connection = sqlite:////var/lib/glance/glance.sqlite'
     replace: 'connection = mysql+pymysql://glance:{{ GLANCE_DBPASS }}@controller/glance'
+  when: "'node1' in inventory_hostname"
   tags: conf-database-section
 
 - name: Keystone authtoken section
@@ -26,6 +28,7 @@
       project_name = service
       username = glance
       password = {{ GLANCE_PASS }}
+  when: "'node1' in inventory_hostname"
   tags: keystone-section
 
 - name: Comment paste deploy section
@@ -33,18 +36,21 @@
     path: /etc/glance/glance-api.conf
     regexp: '^\[paste_deploy\]$'
     replace: '#[paste_deploy]'
+  when: "'node1' in inventory_hostname"
   tags: comment-glance-deploy
 
 - name: Config paste deploy section
   lineinfile:
     path: /etc/glance/glance-api.conf
     line: '[paste_deploy]'
+  when: "'node1' in inventory_hostname"
   tags: paste-deploy
 
 - name: Config paste deploy section
   lineinfile:
     path: /etc/glance/glance-api.conf
     line: 'flavor = keystone'
+  when: "'node1' in inventory_hostname"
   tags: paste-deploy
 
 - name: Comment glance store section
@@ -52,34 +58,40 @@
     path: /etc/glance/glance-api.conf
     regexp: '^\[glance_store\]$'
     replace: '#[glance_store]'
+  when: "'node1' in inventory_hostname"
   tags: comment-glance-store-section
 
 - name: Config glance store section
   lineinfile:
     path: /etc/glance/glance-api.conf
     line: '[glance_store]'
+  when: "'node1' in inventory_hostname"
   tags: glance-store-section
 
 - name: Config glance store section
   lineinfile:
     path: /etc/glance/glance-api.conf
     line: 'stores = file,http'
+  when: "'node1' in inventory_hostname"
   tags: glance-store-section
 
 - name: Config glance store section
   lineinfile:
     path: /etc/glance/glance-api.conf
     line: 'default_store = file'
+  when: "'node1' in inventory_hostname"
   tags: glance-store-section
 
 - name: Config glance store section
   lineinfile:
     path: /etc/glance/glance-api.conf
     line: 'filesystem_store_datadir = /var/lib/glance/images/'
+  when: "'node1' in inventory_hostname"
   tags: glance-store-section
 
 - name: Populate the Image service database
   shell: su -s /bin/sh -c "glance-manage db_sync" glance
+  when: "'node1' in inventory_hostname"
   tags: populate-database
 
 - name: Restart glance-api
@@ -87,6 +99,7 @@
     name: glance-api
     state: restarted
     enabled: yes
+  when: "'node1' in inventory_hostname"
   tags: restart-glance-api
 
 ...

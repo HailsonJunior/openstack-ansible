@@ -11,30 +11,37 @@
     - { line: 'OS_PROJECT_DOMAIN_NAME="Default"' }
     - { line: 'OS_AUTH_URL="http://controller:5000/v3"' }
     - { line: 'OS_IDENTITY_API_VERSION="3"' }
+  when: "'node1' in inventory_hostname"
   tags: export-var
 
 - name: Create a domain for example
   shell: openstack domain create --description "An Example Domain" example
+  when: "'node1' in inventory_hostname"
   tags: create-domain
 
 - name: Create a project
   shell: openstack project create --domain default --description "Service Project" service
+  when: "'node1' in inventory_hostname"
   tags: create-project
 
 - name: Create demo project
   shell: openstack project create --domain default --description "Demo Project" myproject
+  when: "'node1' in inventory_hostname"
   tags: create-demo-project
 
 - name: Create user myuser
   shell: openstack user create --domain default --password {{ myuser_pass }} myuser
+  when: "'node1' in inventory_hostname"
   tags: create-user
 
 - name: Create myrole
   shell: openstack role create myrole
+  when: "'node1' in inventory_hostname"
   tags: create-role
 
 - name: Add the myrole role to the myproject project and myuser user
   shell: openstack role add --project myproject --user myuser myrole
+  when: "'node1' in inventory_hostname"
   tags: add-prject-to-role
 
 ...  

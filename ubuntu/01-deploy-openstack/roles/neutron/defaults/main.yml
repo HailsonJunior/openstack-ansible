@@ -13,7 +13,7 @@ METADATA_SECRET: openstack
 PROVIDER_INTERFACE_NAME: eth0
 
 # IP nodes
-ip_controller: 172.31.85.12
-ip_compute: 172.31.87.229
+ip_controller: 172.31.89.48
+ip_compute: 172.31.81.68
 
 ...

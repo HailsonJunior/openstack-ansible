@@ -6,6 +6,7 @@
     state: present
     login_user: root
     login_password: "{{ db_root_pass }}"
+  when: "'node1' in inventory_hostname"
   tags: glance-database
 
 - name: Grant proper access to the glance database - localhost
@@ -17,6 +18,7 @@
     update_password: on_create
     priv: 'glance.*:ALL'
     login_unix_socket: /var/run/mysqld/mysqld.sock
+  when: "'node1' in inventory_hostname"
   tags: privileges-glance-userdb
 
 - name: Grant proper access to the glance database - any host
@@ -27,6 +29,7 @@
     state: present
     priv: 'glance.*:ALL'
     login_unix_socket: /var/run/mysqld/mysqld.sock
+  when: "'node1' in inventory_hostname"
   tags: privileges-glance-userdb
 
 ...  

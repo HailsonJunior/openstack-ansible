@@ -1,9 +1,9 @@
 ---
 ## Nodes IPs
-ip_controller: 172.31.85.12
-ip_compute: 172.31.87.229
-ip_block: 172.31.87.75
-ip_object: 172.31.94.153
+ip_controller: 172.31.89.48
+ip_compute: 172.31.81.68
+ip_block: 172.31.92.115
+ip_object: 172.31.93.114
 
 ## Network
 network: 172.31.0.0/16

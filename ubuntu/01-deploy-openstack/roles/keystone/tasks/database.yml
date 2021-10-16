@@ -6,6 +6,7 @@
     state: present
     login_user: root
     login_password: "{{ db_root_pass }}"
+  when: "'node1' in inventory_hostname"
   tags: keystone-database
 
 - name: Grant all privileges on keystone database to keystone user - localhost
@@ -17,6 +18,7 @@
     update_password: on_create
     priv: 'keystone.*:ALL'
     login_unix_socket: /var/run/mysqld/mysqld.sock
+  when: "'node1' in inventory_hostname"
   tags: privileges-keystone-userdb
 
 - name: Grant all privileges on keystone database to keystone user - any host
@@ -27,12 +29,14 @@
     state: present
     priv: 'keystone.*:ALL'
     login_unix_socket: /var/run/mysqld/mysqld.sock
+  when: "'node1' in inventory_hostname"
   tags: privileges-keystone-userdb
 
 - name: Install keystone
   apt:
     name: keystone
     state: latest
+  when: "'node1' in inventory_hostname"
   tags: install-keystone
 
 - name: Edit keystone conf file - connection line
@@ -40,6 +44,7 @@
     path: /etc/keystone/keystone.conf
     regexp: '^connection = '
     line: 'connection = mysql+pymysql://keystone:{{ KEYSTONE_DBPASS }}@controller/keystone'
+  when: "'node1' in inventory_hostname"
   tags: connection-conf-keystone
 
 - name: Edit keystone conf file - token section
@@ -47,17 +52,21 @@
     path: /etc/keystone/keystone.conf
     line: 'provider = fernet'
     insertafter: '^\[token\]$'
+  when: "'node1' in inventory_hostname"
   tags: token-conf-keystone
 
 - name: Populate the Identity service database
   shell: sudo su -s /bin/sh -c "keystone-manage db_sync" keystone
+  when: "'node1' in inventory_hostname"
 
 - name: Initialize Fernet key repositories
   shell: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+  when: "'node1' in inventory_hostname"
   tags: init-fernet-key-repository
 
 - name: Initialize Fernet key repositories
   shell: keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
+  when: "'node1' in inventory_hostname"
   tags: init-fernet-key-repository
 
 - name: Bootstrap the Identity service
@@ -66,6 +75,7 @@
          --bootstrap-internal-url http://controller:5000/v3/ \
          --bootstrap-public-url http://controller:5000/v3/ \
          --bootstrap-region-id RegionOne
+  when: "'node1' in inventory_hostname"
   tags: bootstrap-identity
 
 ...  

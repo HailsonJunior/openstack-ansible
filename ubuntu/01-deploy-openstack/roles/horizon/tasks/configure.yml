@@ -4,10 +4,12 @@
     path: /etc/openstack-dashboard/local_settings.py
     regexp: 'OPENSTACK_HOST = "127.0.0.1"' 
     replace: 'OPENSTACK_HOST = "controller"'
+  when: "'node1' in inventory_hostname"
   tags: conf-dash-use-controller
 
 - name: Test if ALLOWED_HOSTS line exist
   shell: grep -c "^ALLOWED_HOSTS = '*'" /etc/openstack-dashboard/local_settings.py || true
+  when: "'node1' in inventory_hostname"
   register: test_grep
   tags: test-line
 
@@ -15,7 +17,7 @@
   lineinfile:
     path: /etc/openstack-dashboard/local_settings.py
     line: "ALLOWED_HOSTS = '*'"
-  when: test_grep.stdout == "0"
+  when: 'node1' in inventory_hostname and test_grep.stdout == "0"
   tags: allow-acces-dash
 
 - name: Configure the memcached session storage service - SESSION_ENGINE
@@ -23,6 +25,7 @@
     path: /etc/openstack-dashboard/local_settings.py
     regexp: "#SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'"
     replace: "SESSION_ENGINE = 'django.contrib.sessions.backends.cache'"
+  when: "'node1' in inventory_hostname"
   tags: conf-memcached-storage
 
 - name: Configure the memcached session storage service - BACKEND
@@ -30,6 +33,7 @@
     path: /etc/openstack-dashboard/local_settings.py
     regexp: "'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache'"
     replace: "'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache'"
+  when: "'node1' in inventory_hostname"
   tags: conf-memcached-storage
 
 - name: Configure the memcached session storage service - LOCATION
@@ -37,6 +41,7 @@
     path: /etc/openstack-dashboard/local_settings.py
     regexp: "'LOCATION': '127.0.0.1:11211'"
     replace: "'LOCATION': 'controller:11211'"
+  when: "'node1' in inventory_hostname"
   tags: conf-memcached-storage
 
 - name: Enable the Identity API version 3
@@ -44,12 +49,14 @@
     path: /etc/openstack-dashboard/local_settings.py
     regexp: 'OPENSTACK_KEYSTONE_URL = "http://%s/identity/v3" % OPENSTACK_HOST'
     replace: 'OPENSTACK_KEYSTONE_URL = "http://%s:5000/identity/v3" % OPENSTACK_HOST'
+  when: "'node1' in inventory_hostname"
   tags: enable-identity-apiv3
 
 - name: Enable support for domains
   lineinfile:
     path: /etc/openstack-dashboard/local_settings.py
     line: 'OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True'
+  when: "'node1' in inventory_hostname"
   tags: enable-suport-for-domains
 
 - name: Configure API versions
@@ -61,18 +68,21 @@
           "image": 2,
           "volume": 3,
       }
+  when: "'node1' in inventory_hostname"
   tags: conf-api-versions
 
 - name: Configure Default as the default domain for users that you create via the dashboard
   lineinfile:
     path: /etc/openstack-dashboard/local_settings.py
     line: 'OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = "Default"'
+  when: "'node1' in inventory_hostname"
   tags: conf-default-domain
 
 - name: Configure user as the default role for users that you create via the dashboard
   lineinfile:
     path: /etc/openstack-dashboard/local_settings.py
     line: 'OPENSTACK_KEYSTONE_DEFAULT_ROLE = "user"'
+  when: "'node1' in inventory_hostname"
   tags: conf-user-role
 
 - name: Set timezone
@@ -80,10 +90,12 @@
     path: /etc/openstack-dashboard/local_settings.py
     regexp: '^TIME_ZONE ='
     line: 'TIME_ZONE = "UTC"'
+  when: "'node1' in inventory_hostname"
   tags: set-time-zone
 
 - name: Verify line WSGIApplicationGroup
   shell: grep -c "WSGIApplicationGroup %{GLOBAL}" /etc/apache2/conf-available/openstack-dashboard.conf || true
+  when: "'node1' in inventory_hostname"
   register: test_grep
   tags: test-grep
 
@@ -91,9 +103,11 @@
   lineinfile:
     path: /etc/apache2/conf-available/openstack-dashboard.conf
     line: 'WSGIApplicationGroup %{GLOBAL}'
+  when: "'node1' in inventory_hostname"
   tags: wsgiappgroup-line
 
 - name: Reload apache2 service
   shell: systemctl reload apache2.service
+  when: "'node1' in inventory_hostname"
 
 ...

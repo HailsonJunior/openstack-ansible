@@ -1,0 +1,15 @@
+--- # https://docs.openstack.org/install-guide
+- name: Configure environment
+  hosts: 'all'
+  become: yes
+  become_method: sudo
+  roles:
+    - { role: prepare-environment, tags: ["prepare-environment"]}
+    - { role: keystone, tags: ["keystone"]}
+    - { role: horizon, tags: ["horizon"]}
+    - { role: glance, tags: ["glance"]}
+    - { role: placement, tags: ["placement"]}
+    - { role: nova, tags: ["nova"]}
+    - { role: neutron, tags: ["neutron"]}
+
+...      

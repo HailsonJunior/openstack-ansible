@@ -3,20 +3,24 @@
   file:
     path: /root/images
     state: directory
+  when: "'node1' in inventory_hostname"
   tags: create-images-dir
 
 - name: Get cirros image
   get_url:
     url: http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
     dest: /root/images/
+  when: "'node1' in inventory_hostname"
   tags: get-cirros-image
 
 - name: Upload the image to the Image service using the QCOW2, bare and container format
   shell: 'glance image-create --name "cirros" --file /root/images/cirros-0.4.0-x86_64-disk.img --disk-format qcow2 --container-format bare --visibility=public'
+  when: "'node1' in inventory_hostname"
   tags: upload-image
 
 - name: List images
   shell: glance image-list
+  when: "'node1' in inventory_hostname"
   tags: list-images
 
 ...

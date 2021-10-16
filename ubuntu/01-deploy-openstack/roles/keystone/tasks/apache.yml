@@ -3,6 +3,7 @@
   lineinfile:
     path: /etc/apache2/apache2.conf
     line: 'ServerName controller'
+  when: "'node1' in inventory_hostname"
   notify:
     - Restart apache
   tags: apache-conf

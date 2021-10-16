@@ -1,9 +1,0 @@
---- # https://docs.openstack.org/neutron/wallaby/install/
-- name: Install and configure neutron service
-  hosts: 'controller, compute'
-  become: yes
-  become_method: sudo
-  roles:
-    - { role: neutron, tags: ["neutron"]}
-
-...      
