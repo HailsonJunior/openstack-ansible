@@ -2,10 +2,18 @@ resource "aws_instance" "openstack_hosts_xlarge" {
     for_each = {
         node1 = {
             name = "Controller"
+            network_interface {
+                network_interface_id = "${aws_network_interface.network-controller.id}"
+                device_index = 0
+            }
             
         }
         node2 = {
             name = "Compute"
+            network_interface {
+                network_interface_id = "${aws_network_interface.network-compute.id}"
+                device_index = 0
+            }
         }
     }
 
@@ -30,10 +38,18 @@ resource "aws_instance" "openstack_hosts_medium" {
     for_each = {
         node3 = {
             name = "Block Storage Node 1"
+            network_interface {
+                network_interface_id = "${aws_network_interface.network-block.id}"
+                device_index = 0
+            }
             
         }
         node4 = {
             name = "Object Storage Node 1"
+            network_interface {
+                network_interface_id = "${aws_network_interface.network-object.id}"
+                device_index = 0
+            }
         }
     }
 

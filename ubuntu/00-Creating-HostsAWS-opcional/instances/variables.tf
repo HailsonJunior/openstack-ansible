@@ -15,3 +15,9 @@ variable "block_type" {
     description = "Block type"
     default = "gp2"
 }
+
+variable "subnetid" {
+    type = string
+    description = "Subnet id"
+    default = "subnet-3a5ad31b"
+}
