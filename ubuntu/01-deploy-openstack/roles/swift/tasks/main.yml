@@ -1,0 +1,12 @@
+---
+- include: controller-service-credentials.yml
+- include: controller-proxy-server.yml
+- include: object-prerequisites.yml
+- include: object-install-and-conf-components.yml
+- include: controller-create-and-distribute-initial-rings.yml
+- include: finalize-instalation.yml
+- include: swift-with-keystone.yml
+- include: verify.yml
+- include: storage-cinder-backup.yml
+
+...  

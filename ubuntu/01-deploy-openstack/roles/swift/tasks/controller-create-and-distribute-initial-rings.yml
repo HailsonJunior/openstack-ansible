@@ -1,0 +1,100 @@
+---
+- name: Create the base account.builder file
+  shell: 'swift-ring-builder /etc/swift/account.builder create 10 1 1'
+  when: "'node1' in inventory_hostname"
+  tags: account-builder-file
+
+- name: Add storage node to the ring
+  shell: 'swift-ring-builder /etc/swift/account.builder add --region 1 --zone 1 --ip {{ ip_object }} --port 6202 --device {{ device1 }} --weight 100'
+  when: "'node1' in inventory_hostname"
+  tags: add-storage-ring
+
+- name: Add storage node to the ring
+  shell: 'swift-ring-builder /etc/swift/account.builder add --region 1 --zone 1 --ip {{ ip_object }} --port 6202 --device {{ device2 }} --weight 100'
+  when: "'node1' in inventory_hostname"
+  tags: add-storage-ring
+
+- name: Verify ring contents
+  shell: 'swift-ring-builder /etc/swift/account.builder'
+  when: "'node1' in inventory_hostname"
+  tags: verify-ring-contents
+
+- name: Rebalance the ring
+  shell: 'swift-ring-builder /etc/swift/account.builder rebalance'
+  when: "'node1' in inventory_hostname"
+  tags: rebalance-ring
+
+- name: Create the base container.builder file
+  shell: 'swift-ring-builder /etc/swift/container.builder create 10 1 1'
+  when: "'node1' in inventory_hostname"
+  tags: container-builder-file
+
+- name: Add storage node to the ring
+  shell: 'swift-ring-builder /etc/swift/container.builder add --region 1 --zone 1 --ip {{ ip_object }} --port 6201 --device {{ device1 }} --weight 100'
+  when: "'node1' in inventory_hostname"
+  tags: add-storage-ring
+
+- name: Add storage node to the ring
+  shell: 'swift-ring-builder /etc/swift/container.builder add --region 1 --zone 1 --ip {{ ip_object }} --port 6201 --device {{ device2 }} --weight 100'
+  when: "'node1' in inventory_hostname"
+  tags: add-storage-ring
+
+- name: Verify ring contents
+  shell: 'swift-ring-builder /etc/swift/container.builder'
+  when: "'node1' in inventory_hostname"
+  tags: verify-ring-contents
+
+- name: Rebalance the ring
+  shell: 'swift-ring-builder /etc/swift/container.builder rebalance'
+  when: "'node1' in inventory_hostname"
+  tags: rebalance-ring
+
+- name: Create the base object.builder file
+  shell: 'swift-ring-builder /etc/swift/object.builder create 10 1 1'
+  when: "'node1' in inventory_hostname"
+  tags: object-builder-file
+
+- name: Add storage node to the ring
+  shell: 'swift-ring-builder /etc/swift/object.builder add --region 1 --zone 1 --ip {{ ip_object }} --port 6200 --device {{ device1 }} --weight 100'
+  when: "'node1' in inventory_hostname"
+  tags: add-storage-ring
+
+- name: Add storage node to the ring
+  shell: 'swift-ring-builder /etc/swift/object.builder add --region 1 --zone 1 --ip {{ ip_object }} --port 6200 --device {{ device2 }} --weight 100'
+  when: "'node1' in inventory_hostname"
+  tags: add-storage-ring
+
+- name: Verify ring contents
+  shell: 'swift-ring-builder /etc/swift/object.builder'
+  when: "'node1' in inventory_hostname"
+  tags: verify-ring-contents
+
+- name: Rebalance the ring
+  shell: 'swift-ring-builder /etc/swift/object.builder rebalance'
+  when: "'node1' in inventory_hostname"
+  tags: rebalance-ring
+
+- name: Fetch files
+  fetch:
+    src: '{{item}}'
+    dest: ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/
+    flat: yes
+  loop:
+    - /etc/swift/account.ring.gz
+    - /etc/swift/container.ring.gz
+    - /etc/swift/object.ring.gz
+  when: "'node1' in inventory_hostname"
+  tags: fetch-files
+
+- name: Copy files to object node
+  copy:
+    src: '{{item}}'
+    dest: /etc/swift/
+  loop:
+    - ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/account.ring.gz
+    - ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/container.ring.gz
+    - ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/object.ring.gz
+  when: "'node4' in inventory_hostname"
+  tags: copy-files
+
+...  

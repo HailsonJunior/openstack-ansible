@@ -7,7 +7,7 @@ variable "ami" {
 variable "block_size" {
     type = number
     description = "Storage block size"
-    default = 10
+    default = 20
 }
 
 variable "block_type" {

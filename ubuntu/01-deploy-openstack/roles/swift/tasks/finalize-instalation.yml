@@ -1,0 +1,61 @@
+---
+- name: Obtain the /etc/swift/swift.conf file from the Object Storage source repository
+  shell: 'curl -o /etc/swift/swift.conf https://opendev.org/openstack/swift/raw/branch/master/etc/swift.conf-sample'
+  when: "'node4' in inventory_hostname"
+  tags: obtain-swift-conf
+
+- name: Configure the hash path suffix for your environment
+  replace:
+    path: /etc/swift/swift.conf
+    regexp: 'swift_hash_path_suffix = changeme'
+    replace: 'swift_hash_path_suffix = {{ HASH_PATH_SUFFIX }}'
+  when: "'node4' in inventory_hostname"
+  tags: hash-suffix
+
+- name: Configure the hash path prefix for your environment
+  replace:
+    path: /etc/swift/swift.conf
+    regexp: 'swift_hash_path_prefix = changeme'
+    replace: 'swift_hash_path_prefix = {{ HASH_PATH_PREFIX }}'
+  when: "'node4' in inventory_hostname"
+  tags: hash-preffix
+
+- name: Set /etc/swift ownership
+  file:
+    path: /etc/swift
+    state: directory
+    recurse: yes
+    owner: root
+    group: swift
+  ignore_errors: yes
+  tags: ownership-file
+
+- name: Restart memcached service
+  service:
+    name: service swift-proxy restart
+    state: restarted
+    enabled: yes
+  ignore_errors: yes
+  tags: restart-memcached
+
+- name: Restart swift-proxy service
+  service:
+    name: swift-proxy
+    state: restarted
+    enabled: yes
+  ignore_errors: yes
+  tags: restart-swift-proxy
+
+- name: Copy internal-client.conf file
+  copy:
+    src: ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/internal-client.conf
+    dest: /etc/swift/
+  when: "'node4' in inventory_hostname"
+  tags: copy-internal-client-file
+
+- name: Start the Object Storage services
+  shell: 'swift-init all start'
+  when: "'node4' in inventory_hostname"
+  tags: start-object-service
+
+...

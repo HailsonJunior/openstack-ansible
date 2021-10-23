@@ -1,0 +1,38 @@
+---
+- name: Install cinder-backup
+  apt:
+    name: cinder-backup
+    state: latest
+  when: "'node3' in inventory_hostname"
+  tags: install-cinder-backup
+
+- name: Configure backup option
+  lineinfile:
+    path: /etc/cinder/cinder.conf
+    line: 'backup_driver = cinder.backup.drivers.swift.SwiftBackupDriver'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node3' in inventory_hostname"
+  tags: conf-backup-option
+
+- name: Configure swift url
+  lineinfile:
+    path: /etc/cinder/cinder.conf
+    line: 'backup_swift_url = {{ SWIFT_URL }}'
+    insertafter: '^backup_driver = cinder.backup.drivers.swift.SwiftBackupDriver'
+  when: "'node3' in inventory_hostname"
+  tags: conf-swift-url
+
+- name: Catalog show object-store
+  shell: 'openstack catalog show object-store'
+  when: "'node1' in inventory_hostname"
+  tags: show-object-store
+
+- name: Restart cinder-backup
+  service:
+    name: cinder-backup
+    state: restarted
+    enabled: yes
+  when: "'node3' in inventory_hostname"
+  tags: restart cinder-backup
+
+...

@@ -1,0 +1,105 @@
+---
+- name: Install the supporting utility packages
+  apt:
+    name:
+      - lvm2
+      - thin-provisioning-tools
+      - tgt
+    state: latest
+  when: "'node3' in inventory_hostname"
+  tags: install-packages
+
+- name: Create the LVM physical volume
+  shell: 'pvcreate /dev/{{ device }} -ff -y'
+  when: "'node3' in inventory_hostname"
+  tags: create-lvm-physical-volume
+
+- name: Create the LVM volume group cinder-volumes
+  shell: 'vgcreate cinder-volumes /dev/{{ device }}'
+  when: "'node3' in inventory_hostname"
+  tags: create-lvm-vg
+
+- name: Add a filter that accepts the device and rejects all other devices
+  lineinfile:
+    path: /etc/lvm/lvm.conf
+    line: '        filter = [ "a/{{ device }}/", "r/.*/"]'
+    insertafter: '^devices'
+  when: "'node3' in inventory_hostname"
+  tags: add-filter
+
+- name: Install cinder volume
+  apt:
+    name: cinder-volume
+    state: latest
+  when: "'node3' in inventory_hostname"
+  tags: install-cinder-volume
+
+- name: Configure database access
+  replace:
+    path: /etc/cinder/cinder.conf
+    regexp: 'connection = sqlite:////var/lib/cinder/cinder.sqlite'
+    replace: 'mysql+pymysql://cinder:{{ CINDER_DBPASS }}@controller/cinder'
+  when: "'node3' in inventory_hostname"
+  tags: conf-database-access
+
+- name: Configure Identity service access
+  blockinfile:
+    path: /etc/cinder/cinder.conf
+    block: |
+      #
+      [keystone_authtoken]
+      www_authenticate_uri = http://controller:5000
+      auth_url = http://controller:5000
+      memcached_servers = controller:11211
+      auth_type = password
+      project_domain_name = default
+      user_domain_name = default
+      project_name = service
+      username = cinder
+      password = {{ CINDER_PASS }}
+  when: "'node3' in inventory_hostname"
+  tags: conf-identity-access
+
+- name: Configure my_ip option
+  lineinfile:
+    path: /etc/cinder/cinder.conf
+    line: 'my_ip = {{ ip_block }}'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node3' in inventory_hostname"
+  tags: conf-myip-option
+
+- name: Configure lvm section
+  shell: 'echo -e "\n\n[lvm]\nvolume_driver = cinder.volume.drivers.lvm.LVMVolumeDriver\nvolume_group = cinder-volumes\ntarget_protocol = iscsi\ntarget_helper = tgtadm" >> /etc/cinder/cinder.conf'
+  when: "'node3' in inventory_hostname"
+  tags: conf-lvm-section
+
+- name: Configure the location of the Image service API
+  lineinfile:
+    path: /etc/cinder/cinder.conf
+    line: 'glance_api_servers = http://controller:9292'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node3' in inventory_hostname"
+  tags: conf-image-api-location
+
+- name: Configure the lock path
+  shell: 'echo -e "\n\n[oslo_concurrency]\nlock_path = /var/lib/cinder/tmp" >> /etc/cinder/cinder.conf'
+  when: "'node3' in inventory_hostname"
+  tags: conf-lock-path
+
+- name: Restart tgt service
+  service:
+    name: tgt
+    state: restarted
+    enabled: yes
+  when: "'node3' in inventory_hostname"
+  tags: restart-tgt
+
+- name: Restart cinder volume service
+  service:
+    name: cinder-volume
+    state: restarted
+    enabled: yes
+  when: "'node3' in inventory_hostname"
+  tags: restart-cinder-volume
+
+...  

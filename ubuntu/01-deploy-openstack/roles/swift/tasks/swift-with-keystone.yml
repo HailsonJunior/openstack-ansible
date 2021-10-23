@@ -1,0 +1,21 @@
+---
+- name: Configure a service endpoint of type object-store in Keystone pointing to your Swift proxy
+  blockinfile:
+    path: /etc/keystone/default_catalog.templates
+    block: |
+      catalog.RegionOne.object_store.name = Swift Service
+      catalog.RegionOne.object_store.publicURL = http://controller:8080/v1/AUTH_$(tenant_id)s
+      catalog.RegionOne.object_store.adminURL = http://controller:8080/
+      catalog.RegionOne.object_store.internalURL = http://controller:8080/v1/AUTH_$(tenant_id)s
+  when: "'node1' in inventory_hostname"
+  tags: conf-svc-endpoint
+
+- name: Configure pipeline:main
+  replace:
+    path: /etc/swift/proxy-server.conf
+    regexp: 'pipeline = catch_errors gatekeeper healthcheck proxy-logging cache container_sync bulk ratelimit authtoken keystoneauth container-quotas account-quotas slo dlo versioned_writes proxy-logging proxy-server'
+    replace: 'pipeline = catch_errors gatekeeper healthcheck proxy-logging cache container_sync bulk ratelimit authtoken keystoneauth container-quotas account-quotas slo dlo versioned_writes proxy-logging proxy-server authtoken keystoneauth proxy-logging proxy-server'
+  when: "'node1' in inventory_hostname"
+  tags: conf-pipeline-main
+
+...  

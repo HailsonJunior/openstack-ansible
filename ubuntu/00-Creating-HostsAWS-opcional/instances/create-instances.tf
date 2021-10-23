@@ -41,7 +41,7 @@ resource "aws_instance" "compute" {
 }
 
 resource "aws_instance" "block" {
-    instance_type = "t2.micro"
+    instance_type = "t2.medium"
     ami = var.ami
     key_name = "${aws_key_pair.my-key.key_name}"
     network_interface {
@@ -62,7 +62,7 @@ resource "aws_instance" "block" {
 }
 
 resource "aws_instance" "object" {
-    instance_type = "t2.micro"
+    instance_type = "t2.medium"
     ami = var.ami
     key_name = "${aws_key_pair.my-key.key_name}"
     network_interface {

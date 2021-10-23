@@ -1,0 +1,132 @@
+---
+- name: Install packages
+  apt:
+    name:
+      - swift
+      - swift-account
+      - swift-container
+      - swift-object
+  when: "'node4' in inventory_hostname"
+  tags: install-packages
+
+- name: Obtain the accounting configuration files from the Object Storage source repository
+  shell: 'curl -o /etc/swift/account-server.conf https://opendev.org/openstack/swift/raw/branch/master/etc/account-server.conf-sample'
+  when: "'node4' in inventory_hostname"
+  tags: accounting-conf-file
+
+- name: Obtain the container configuration files from the Object Storage source repository
+  shell: 'curl -o /etc/swift/container-server.conf https://opendev.org/openstack/swift/raw/branch/master/etc/container-server.conf-sample'
+  when: "'node4' in inventory_hostname"
+  tags: container-conf-file
+
+- name: Obtain the object service configuration files from the Object Storage source repository
+  shell: 'curl -o /etc/swift/object-server.conf https://opendev.org/openstack/swift/raw/branch/master/etc/object-server.conf-sample'
+  when: "'node4' in inventory_hostname"
+  tags: object-conf-file
+
+- name: Configure user, configuration directory, and mount point directory
+  blockinfile:
+    path: /etc/swift/account-server.conf
+    insertafter: '^\[DEFAULT\]$'
+    block: |
+      bind_ip = {{ ip_object }}
+      user = swift
+      swift_dir = /etc/swift
+      devices = /srv/node
+      mount_check = True
+  when: "'node4' in inventory_hostname"
+  tags: conf-account-server
+
+- name: Configure filter:recon section
+  lineinfile:
+    path: /etc/swift/account-server.conf
+    line: 'recon_cache_path = /var/cache/swift'
+    insertafter: '^use = egg:swift#recon'
+  when: "'node4' in inventory_hostname"
+  tags: conf-filter-recon
+
+- name: Configure container server - user, configuration directory, and mount point directory
+  blockinfile:
+    path: /etc/swift/container-server.conf
+    insertafter: '^\[DEFAULT\]$'
+    block: |
+      bind_ip = {{ ip_object }}
+      user = swift
+      swift_dir = /etc/swift
+      devices = /srv/node
+      mount_check = True
+  when: "'node4' in inventory_hostname"
+  tags: conf-container-server
+
+- name: Configure container server - filter:recon
+  lineinfile:
+    path: /etc/swift/container-server.conf
+    line: 'recon_cache_path = /var/cache/swift'
+    insertafter: '^use = egg:swift#recon'
+  when: "'node4' in inventory_hostname"
+  tags: conf-filter-recon
+
+- name: Configure object server - user, configuration directory, and mount point directory
+  blockinfile:
+    path: /etc/swift/object-server.conf
+    insertafter: '^\[DEFAULT\]$'
+    block: |
+      bind_ip = {{ ip_object }}
+      user = swift
+      swift_dir = /etc/swift
+      devices = /srv/node
+      mount_check = True
+  when: "'node4' in inventory_hostname"
+  tags: conf-object-server
+
+- name: Configure object server - filter:recon
+  lineinfile:
+    path: /etc/swift/object-server.conf
+    line: 'recon_cache_path = /var/cache/swift'
+    insertafter: '^use = egg:swift#recon'
+  when: "'node4' in inventory_hostname"
+  tags: conf-filter-recon
+
+- name: Configure object server - filter:recon
+  lineinfile:
+    path: /etc/swift/object-server.conf
+    line: 'recon_lock_path = /var/lock'
+    insertafter: '^recon_cache_path = /var/cache/swift'
+  when: "'node4' in inventory_hostname"
+  tags: conf-filter-recon
+
+- name: Remove -e lines
+  lineinfile:
+    path: /etc/swift/object-server.conf
+    regexp: '^-e'
+    state: absent
+  when: "'node4' in inventory_hostname"
+  tags: remove-lines
+
+- name: Change /srv/node directory ownership
+  file:
+    path: /srv/node
+    state: directory
+    owner: swift
+    group: swift
+    recurse: yes
+  when: "'node4' in inventory_hostname"
+  tags: ownership-directory
+
+- name: Create /var/cache/swift directory
+  shell: 'mkdir -p /var/cache/swift'
+  when: "'node4' in inventory_hostname"
+  tags: create-dir
+
+- name: Change /var/cache/swift directory ownership
+  file:
+    path: /var/cache/swift
+    state: directory
+    owner: root
+    group: swift
+    mode: '0775'
+    recurse: yes
+  when: "'node4' in inventory_hostname"
+  tags: ownership-directory
+
+...  

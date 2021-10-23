@@ -1,0 +1,97 @@
+---
+- name: Install packages
+  apt:
+    name:
+      - swift
+      - swift-proxy
+      - memcached
+    state: latest
+  when: "'node1' in inventory_hostname"
+  tags: install-packages
+
+- name: Create /etc/swift directory
+  file:
+    path: /etc/swift
+    state: directory
+  when: "'node1' in inventory_hostname"
+  tags: create-swift-directory
+
+- name: Obtain the proxy service configuration file from the Object Storage source repository
+  shell: 'curl -o /etc/swift/proxy-server.conf https://opendev.org/openstack/swift/raw/branch/master/etc/proxy-server.conf-sample'
+  when: "'node1' in inventory_hostname"
+  tags: obtain-proxy-configuration
+
+- name: Configure user
+  lineinfile:
+    path: /etc/swift/proxy-server.conf
+    line: 'user = swift'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-user
+
+- name: Configure swift dir
+  lineinfile:
+    path: /etc/swift/proxy-server.conf
+    line: 'swift_dir = /etc/swift'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-swift-dir
+
+- name: Configure pipeline:main section
+  replace:
+    path: /etc/swift/proxy-server.conf
+    regexp: 'pipeline = catch_errors gatekeeper healthcheck proxy-logging cache listing_formats container_sync bulk tempurl ratelimit tempauth copy container-quotas account-quotas slo dlo versioned_writes symlink proxy-logging proxy-server'
+    replace: 'pipeline = catch_errors gatekeeper healthcheck proxy-logging cache container_sync bulk ratelimit authtoken keystoneauth container-quotas account-quotas slo dlo versioned_writes proxy-logging proxy-server'
+  when: "'node1' in inventory_hostname"
+  tags: conf-pipeline
+
+- name: Enable automatic account creation
+  lineinfile:
+    path: /etc/swift/proxy-server.conf
+    line: 'account_autocreate = True'
+    insertafter: '^\[app:proxy-server\]$'
+  when: "'node1' in inventory_hostname"
+  tags: automatic-account-creation
+
+- name: Configure filter:keystoneauth section
+  shell: 'echo -e "\n\n[filter:keystoneauth]\nuse = egg:swift#keystoneauth\nreseller_prefix = AUTH, SERVICE\noperator_roles = admin, swiftoperator\nSERVICE_service_roles = service" >> /etc/swift/proxy-server.conf'
+  when: "'node1' in inventory_hostname"
+  tags: conf-filter-keystoneauth
+
+- name: Configure filter:authtoken section
+  blockinfile:
+    path: /etc/swift/proxy-server.conf
+    block: |
+      #
+      [filter:authtoken]
+      paste.filter_factory = keystonemiddleware.auth_token:filter_factory
+      www_authenticate_uri = http://controller:5000
+      auth_url = http://controller:5000
+      memcached_servers = controller:11211
+      auth_type = password
+      project_domain_id = default
+      user_domain_id = default
+      project_name = service
+      username = swift
+      password = {{ SWIFT_PASS }}
+      delay_auth_decision = True
+  when: "'node1' in inventory_hostname"
+  tags: conf-filter-authtoken
+
+- name: Configure filter:cache section
+  lineinfile:
+    path: /etc/swift/proxy-server.conf
+    line: 'memcache_servers = controller:11211'
+    insertafter: '^\[filter:cache\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-filter-cache
+
+- name: Remove -e lines
+  lineinfile:
+    path: /etc/swift/proxy-server.conf
+    regexp: '^-e'
+    state: absent
+  when: "'node1' in inventory_hostname"
+  tags: remove-lines
+
+...  

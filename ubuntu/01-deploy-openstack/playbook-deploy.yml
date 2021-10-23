@@ -12,5 +12,7 @@
     - { role: placement, tags: ["placement"]}
     - { role: nova, tags: ["nova"]}
     - { role: neutron, tags: ["neutron"]}
+    - { role: cinder, tags: ["cinder"]}
+    - { role: swift, tags: ["swift"]}
 
 ...      

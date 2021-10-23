@@ -1,0 +1,15 @@
+---
+# DBs passwords
+db_root_pass: openstack
+CINDER_DBPASS: openstack
+
+# Other passwords
+CINDER_PASS: openstack
+RABBIT_PASS: openstack
+
+# IPs nodes
+ip_controller: 172.31.82.248
+ip_block: 172.31.91.50
+
+# Device /dev/xxx
+device: xvdd

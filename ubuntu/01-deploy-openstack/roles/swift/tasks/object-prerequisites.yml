@@ -1,0 +1,104 @@
+---
+- name: Install the supporting utility packages~
+  apt:
+    name:
+      - xfsprogs
+      - rsync
+    state: latest
+  when: "'node4' in inventory_hostname"
+  tags: install-packages
+
+- name: Format the first device as XFS
+  shell: 'mkfs.xfs /dev/{{ device1 }} -f'
+  when: "'node4' in inventory_hostname"
+  tags: format-xfs
+
+- name: Format the second device as XFS
+  shell: 'mkfs.xfs /dev/{{ device2 }} -f'
+  when: "'node4' in inventory_hostname"
+  tags: format-xfs
+
+- name: Create the mount point directory structure - device1
+  shell: 'mkdir -p /srv/node/{{ device1 }}'
+  when: "'node4' in inventory_hostname"
+  tags: mount-point-dir
+
+- name: Create the mount point directory structure - device2
+  shell: 'mkdir -p /srv/node/{{ device2 }}'
+  when: "'node4' in inventory_hostname"
+  tags: mount-point-dir
+
+- name: Configure /etc/fstab - device1
+  shell: "UUID=`sudo blkid | grep -i /dev/{{ device1 }} | cut -d ' ' -f2` && echo $UUID /srv/node/{{ device1 }} xfs noatime 0 2 >> /etc/fstab"
+  when: "'node4' in inventory_hostname"
+  tags: conf-fstab
+
+- name: Configure /etc/fstab - device2
+  shell: "UUID=`sudo blkid | grep -i /dev/{{ device2 }} | cut -d ' ' -f2` && echo $UUID /srv/node/{{ device2 }} xfs noatime 0 2 >> /etc/fstab"
+  when: "'node4' in inventory_hostname"
+  tags: conf-fstab
+
+- name: Mount device1
+  shell: 'mount /srv/node/{{ device1 }}'
+  when: "'node4' in inventory_hostname"
+  tags: mount-device1
+
+- name: Mount device2
+  shell: 'mount /srv/node/{{ device2 }}'
+  when: "'node4' in inventory_hostname"
+  tags: mount-device2
+
+- name: Create rsyncd.conf file
+  file:
+    path: /etc/rsyncd.conf
+    state: touch
+  when: "'node4' in inventory_hostname"
+  tags: create-rsyncd-file
+
+- name: Configure rsyncd.conf file
+  blockinfile:
+    path: /etc/rsyncd.conf
+    block: |
+      uid = swift
+      gid = swift
+      log file = /var/log/rsyncd.log
+      pid file = /var/run/rsyncd.pid
+      address = {{ ip_object }}
+
+      [account]
+      max connections = 2
+      path = /srv/node/
+      read only = False
+      lock file = /var/lock/account.lock
+
+      [container]
+      max connections = 2
+      path = /srv/node/
+      read only = False
+      lock file = /var/lock/container.lock
+
+      [object]
+      max connections = 2
+      path = /srv/node/
+      read only = False
+      lock file = /var/lock/object.lock
+  when: "'node4' in inventory_hostname"
+  tags: conf-rsyncd-file
+
+- name: Enable rsync service
+  replace:
+    path: /etc/default/rsync
+    regexp: 'RSYNC_ENABLE=false'
+    replace: 'RSYNC_ENABLE=true'
+  when: "'node4' in inventory_hostname"
+  tags: enable-rsync-service
+
+- name: Start rsync service
+  service:
+    name: rsync
+    state: started
+    enabled: yes
+  when: "'node4' in inventory_hostname"
+  tags: start-rsync-service
+
+...  

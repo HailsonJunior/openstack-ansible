@@ -1,0 +1,27 @@
+---
+- name: Show the service status
+  shell: 'swift stat'
+  when: "'node1' in inventory_hostname"
+  tags: show-service-status
+
+- name: Create container1 container
+  shell: 'openstack container create container1'
+  when: "'node1' in inventory_hostname"
+  tags: create-container
+
+- name: Upload a test file to the container1 container
+  shell: 'openstack object create container1 test-container'
+  when: "'node1' in inventory_hostname"
+  tags: upload-test-file
+
+- name: List files in the container1 container
+  shell: 'openstack object list container1'
+  when: "'node1' in inventory_hostname"
+  tags: list-files-container1
+
+- name: Download a test file from the container1 container
+  shell: 'openstack object save container1 test-container'
+  when: "'node1' in inventory_hostname"
+  tags: download-file
+
+...  

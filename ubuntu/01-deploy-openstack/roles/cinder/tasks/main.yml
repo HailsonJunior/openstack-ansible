@@ -1,0 +1,7 @@
+---
+- include: controller-database.yml
+- include: controller-service-credentials.yml
+- include: controller-install-and-configure.yml
+- include: storage-install-and-configure.yml
+
+...  

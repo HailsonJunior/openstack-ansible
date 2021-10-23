@@ -1,0 +1,103 @@
+---
+- name: Install the packages
+  apt:
+    name:
+      - cinder-api
+      - cinder-scheduler
+    state: latest
+  when: "'node1' in inventory_hostname"
+  tags: install-packages
+
+- name: Configure database access
+  replace:
+    path: /etc/cinder/cinder.conf
+    regexp: 'connection = sqlite:////var/lib/cinder/cinder.sqlite'
+    replace: 'connection = mysql+pymysql://cinder:{{ CINDER_DBPASS }}@controller/cinder'
+  when: "'node1' in inventory_hostname"
+  tags: conf-db-access
+
+- name: configure RabbitMQ message queue access
+  lineinfile:
+    path: /etc/cinder/cinder.conf
+    line: 'transport_url = rabbit://openstack:{{ RABBIT_PASS }}@controller'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-rabbitmq-access
+
+- name: Configure Identity service access
+  blockinfile:
+    path: /etc/cinder/cinder.conf
+    block: |
+      #
+      [keystone_authtoken]
+      www_authenticate_uri = http://controller:5000
+      auth_url = http://controller:5000
+      memcached_servers = controller:11211
+      auth_type = password
+      project_domain_name = default
+      user_domain_name = default
+      project_name = service
+      username = cinder
+      password = {{ CINDER_PASS }}
+  when: "'node1' in inventory_hostname"
+  tags: conf-identity-access
+
+- name: Configure the my_ip option
+  lineinfile:
+    path: /etc/cinder/cinder.conf
+    line: 'my_ip = {{ ip_controller }}'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-myip-option
+
+- name: Configure the lock path
+  shell: 'echo -e "\n\n[oslo_concurrency]\nlock_path = /var/lib/cinder/tmp" >> /etc/cinder/cinder.conf'
+  when: "'node1' in inventory_hostname"
+  tags: conf-lock-path
+
+- name: Remove -e line
+  lineinfile:
+    path: /etc/cinder/cinder.conf
+    regexp: '^-e'
+    state: absent
+  when: "'node1' in inventory_hostname"
+  tags: remove-lines
+
+- name: Populate the Block Storage database
+  shell: 'su -s /bin/sh -c "cinder-manage db sync" cinder'
+  when: "'node1' in inventory_hostname"
+  tags: populate-bs-db
+
+- name: Configure Compute to use Block Storage
+  lineinfile:
+    path: /etc/nova/nova.conf
+    line: 'os_region_name = RegionOne'
+    insertafter: '^\[cinder\]$'
+  when: "'node1' in inventory_hostname"
+  tags: conf-compute-to-use-bs
+
+- name: Restart the Compute API service
+  service:
+    name: nova-api
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-nova-api
+
+- name: Restart Cinder Scheduler service
+  service:
+    name: cinder-scheduler
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-cinder-scheduler
+
+- name: Restart apache2 service
+  service:
+    name: apache2
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-apache2
+
+...  

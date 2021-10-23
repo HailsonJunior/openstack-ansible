@@ -1,0 +1,35 @@
+---
+- name: Create the cinder database
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: cinder
+    state: present
+    login_user: root
+    login_password: "{{ db_root_pass }}"
+  when: "'node1' in inventory_hostname"
+  tags: create-cinder-db
+
+- name: Grant proper access to the cinder database - localhost
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: cinder
+    password: "{{ CINDER_DBPASS }}"
+    state: present
+    append_privs: yes
+    priv: 'cinder.*:ALL'
+  when: "'node1' in inventory_hostname"
+  tags: privileges-cinderdb
+
+- name: Grant proper access to the cinder database - other hosts
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: cinder
+    password: "{{ CINDER_DBPASS }}"
+    state: present
+    host: '%'
+    append_privs: yes
+    priv: 'cinder.*:ALL'
+  when: "'node1' in inventory_hostname"
+  tags: privileges-cinderdb
+
+...  
