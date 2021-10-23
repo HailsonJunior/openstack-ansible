@@ -16,4 +16,14 @@ PROVIDER_INTERFACE_NAME: eth0
 ip_controller: 172.31.82.248
 ip_compute: 172.31.87.49
 
+# Network
+network: 172.31.0.0
+
+# VLAN_ID
+MIN_VLAN_ID: 1001
+MAX_VLAN_ID: 2000
+
+# L3 scheduler
+OVN_L3_SCHEDULER: chance
+
 ...

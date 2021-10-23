@@ -44,4 +44,9 @@
   when: "'node1' in inventory_hostname"
   tags: add-prject-to-role
 
+- name: Create role user
+  shell: 'openstack role create user'
+  when: "'node1' in inventory_hostname"
+  tags: create-user-role
+
 ...  

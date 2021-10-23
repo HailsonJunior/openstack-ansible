@@ -1,0 +1,46 @@
+---
+- name: Install ovn packages - compute
+  apt:
+    name:
+      - ovn-central
+      - ovn-host  
+      - ovn-docker
+      - ovn-common
+    state: latest
+  when: "'node2' in inventory_hostname"
+  tags: install-ovn-packages
+
+- name: Start the OVS service - compute
+  shell: '/usr/share/openvswitch/scripts/ovs-ctl start --system-id="random"'
+  when: "'node2' in inventory_hostname"
+  tags: start-ovs-service
+
+- name: Use OVS databases on the controller node - compute
+  shell: 'ovs-vsctl set open . external-ids:ovn-remote=tcp:{{ ip_controller }}:6642'
+  when: "'node2' in inventory_hostname"
+  tags: conf-ovs-service
+
+- name: Enable one or more overlay network protocols - compute
+  shell: 'ovs-vsctl set open . external-ids:ovn-encap-type=geneve,vxlan'
+  when: "'node2' in inventory_hostname"
+  tags: conf-ovs-service
+
+- name: Configure the overlay network local endpoint IP address - compute
+  shell: 'ovs-vsctl set open . external-ids:ovn-encap-ip={{ ip_compute }}'
+  when: "'node2' in inventory_hostname"
+  tags: conf-overlay-network
+
+- name: Start the ovn-controller service - compute
+  service:
+    name: ovn-controller
+    state: started
+    enabled: yes
+  when: "'node2' in inventory_hostname"
+  tags: start-ovn-controller
+
+- name: Verify operation
+  shell: 'ovn-sbctl show'
+  when: "'node2' in inventory_hostname"
+  tags: verify-operation
+
+...
