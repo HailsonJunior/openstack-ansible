@@ -12,4 +12,4 @@ device2: xvde
 ip_object: 172.31.82.229
 
 # SWIFT URL
-SWIFT_URL: http://controller:8080/v1/AUTH_f7ae4a24764f470ca60cb0f951e16d2a
+SWIFT_URL: http://controller:8080/v1/

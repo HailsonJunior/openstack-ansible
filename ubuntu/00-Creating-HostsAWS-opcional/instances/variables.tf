@@ -1,7 +1,7 @@
 variable "ami" {
     type = string
     description = "AMI"
-    default = "ami-0cb5f8e033cfa84d2"
+    default = "ami-09e67e426f25ce0d7"
 }
 
 variable "block_size" {

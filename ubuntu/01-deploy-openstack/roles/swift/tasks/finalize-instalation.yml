@@ -1,7 +1,7 @@
 ---
 - name: Obtain the /etc/swift/swift.conf file from the Object Storage source repository
   shell: 'curl -o /etc/swift/swift.conf https://opendev.org/openstack/swift/raw/branch/master/etc/swift.conf-sample'
-  when: "'node4' in inventory_hostname"
+  when: "'node1' in inventory_hostname"
   tags: obtain-swift-conf
 
 - name: Configure the hash path suffix for your environment
@@ -9,7 +9,7 @@
     path: /etc/swift/swift.conf
     regexp: 'swift_hash_path_suffix = changeme'
     replace: 'swift_hash_path_suffix = {{ HASH_PATH_SUFFIX }}'
-  when: "'node4' in inventory_hostname"
+  when: "'node1' in inventory_hostname"
   tags: hash-suffix
 
 - name: Configure the hash path prefix for your environment
@@ -17,7 +17,7 @@
     path: /etc/swift/swift.conf
     regexp: 'swift_hash_path_prefix = changeme'
     replace: 'swift_hash_path_prefix = {{ HASH_PATH_PREFIX }}'
-  when: "'node4' in inventory_hostname"
+  when: "'node1' in inventory_hostname"
   tags: hash-preffix
 
 - name: Set /etc/swift ownership
@@ -50,12 +50,31 @@
   copy:
     src: ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/internal-client.conf
     dest: /etc/swift/
+    owner: root
+    group: swift
   when: "'node4' in inventory_hostname"
   tags: copy-internal-client-file
+
+- name: Copy swift conf file to storage
+  copy:
+    src: ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/swift.conf
+    dest: /etc/swift/swift.conf
+  when: "'node4' in inventory_hostname"
+  tags: copy-swift-conf
+
+- name: Ensure proper ownership of the configuration directory
+  shell: 'chown -R root:swift /etc/swift'
+  when: "'node1' in inventory_hostname"
+  tags: ownership-dir
+
+- name: Ensure proper ownership of the configuration directory
+  shell: 'chown -R root:swift /etc/swift'
+  when: "'node4' in inventory_hostname"
+  tags: ownership-dir
 
 - name: Start the Object Storage services
   shell: 'swift-init all start'
   when: "'node4' in inventory_hostname"
   tags: start-object-service
 
-...
+...    

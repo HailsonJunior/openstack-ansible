@@ -38,7 +38,7 @@
   replace:
     path: /etc/cinder/cinder.conf
     regexp: 'connection = sqlite:////var/lib/cinder/cinder.sqlite'
-    replace: 'mysql+pymysql://cinder:{{ CINDER_DBPASS }}@controller/cinder'
+    replace: 'connection = mysql+pymysql://cinder:{{ CINDER_DBPASS }}@controller/cinder'
   when: "'node3' in inventory_hostname"
   tags: conf-database-access
 
@@ -68,6 +68,14 @@
   when: "'node3' in inventory_hostname"
   tags: conf-myip-option
 
+- name: Configure RabbitMQ message queue access
+  lineinfile:
+    path: /etc/cinder/cinder.conf
+    line: 'transport_url = rabbit://openstack:{{ RABBIT_PASS }}@controller'
+    insertafter: '^\[DEFAULT\]$'
+  when: "'node3' in inventory_hostname"
+  tags: conf-rabbit-access
+
 - name: Configure lvm section
   shell: 'echo -e "\n\n[lvm]\nvolume_driver = cinder.volume.drivers.lvm.LVMVolumeDriver\nvolume_group = cinder-volumes\ntarget_protocol = iscsi\ntarget_helper = tgtadm" >> /etc/cinder/cinder.conf'
   when: "'node3' in inventory_hostname"
@@ -85,6 +93,14 @@
   shell: 'echo -e "\n\n[oslo_concurrency]\nlock_path = /var/lib/cinder/tmp" >> /etc/cinder/cinder.conf'
   when: "'node3' in inventory_hostname"
   tags: conf-lock-path
+
+- name: Remove -e lines
+  lineinfile:
+    path: /etc/cinder/cinder.conf
+    regexp: '^-e'
+    state: absent
+  when: "'node3' in inventory_hostname"
+  tags: remove-lines
 
 - name: Restart tgt service
   service:

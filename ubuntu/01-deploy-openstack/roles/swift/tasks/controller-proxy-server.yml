@@ -54,7 +54,7 @@
   tags: automatic-account-creation
 
 - name: Configure filter:keystoneauth section
-  shell: 'echo -e "\n\n[filter:keystoneauth]\nuse = egg:swift#keystoneauth\nreseller_prefix = AUTH, SERVICE\noperator_roles = admin, swiftoperator\nSERVICE_service_roles = service" >> /etc/swift/proxy-server.conf'
+  shell: 'echo -e "\n\n[filter:keystoneauth]\nuse = egg:swift#keystoneauth\nreseller_prefix = AUTH, SERVICE\noperator_roles = admin, user\nSERVICE_service_roles = service" >> /etc/swift/proxy-server.conf'
   when: "'node1' in inventory_hostname"
   tags: conf-filter-keystoneauth
 
