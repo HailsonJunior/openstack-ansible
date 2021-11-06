@@ -4,7 +4,7 @@ resource "aws_security_group" "openstack-sg" {
         from_port = 0
         to_port = 0
         protocol = -1
-        cidr_blocks = ["172.31.0.0/16"]
+        cidr_blocks = ["172.31.0.0/16", "177.62.199.22/32"]
     }
     egress {
         from_port = 0

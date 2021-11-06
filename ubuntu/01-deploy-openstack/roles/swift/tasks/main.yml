@@ -6,7 +6,7 @@
 - include: controller-create-and-distribute-initial-rings.yml
 - include: finalize-instalation.yml
 - include: swift-with-keystone.yml
-#- include: verify.yml
+- include: verify.yml
 - include: storage-cinder-backup.yml
 
 ...  

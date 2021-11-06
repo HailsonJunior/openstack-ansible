@@ -7,7 +7,7 @@
 - include: compute-self-service-networks.yml
 - include: compute-finalize-instalation.yml
 - include: verify-operation.yml
-  #- include: controller-ovn.yml
-  #- include: compute-ovn.yml
+- include: controller-ovn.yml
+- include: compute-ovn.yml
 
 ...

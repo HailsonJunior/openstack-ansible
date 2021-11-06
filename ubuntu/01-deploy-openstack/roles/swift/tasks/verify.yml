@@ -9,8 +9,15 @@
   when: "'node1' in inventory_hostname"
   tags: create-container
 
+- name: Create teste file
+  file:
+    path: /tmp/test-container
+    state: touch
+  when: "'node1' in inventory_hostname"
+  tags: create-test-file
+
 - name: Upload a test file to the container1 container
-  shell: 'openstack object create container1 test-container'
+  shell: 'openstack object create container1 /tmp/test-container'
   when: "'node1' in inventory_hostname"
   tags: upload-test-file
 
@@ -18,10 +25,5 @@
   shell: 'openstack object list container1'
   when: "'node1' in inventory_hostname"
   tags: list-files-container1
-
-- name: Download a test file from the container1 container
-  shell: 'openstack object save container1 test-container'
-  when: "'node1' in inventory_hostname"
-  tags: download-file
 
 ...  
