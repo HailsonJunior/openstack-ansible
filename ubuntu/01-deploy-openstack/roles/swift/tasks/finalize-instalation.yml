@@ -77,4 +77,12 @@
   when: "'node4' in inventory_hostname"
   tags: start-object-service
 
+- name: Restart mysql service
+  service:
+    name: mysql
+    state: restarted
+    enabled: yes
+  when: "'node1' in inventory_hostname"
+  tags: restart-mysql-service
+
 ...    

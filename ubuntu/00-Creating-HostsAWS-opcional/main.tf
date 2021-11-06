@@ -7,15 +7,12 @@ terraform {
   }
   required_version = ">= 0.14.9"
 
-  # Após criar o bucket s3, descomente o módulo abaixo para criar buckup do state
-  # Ajuste o profile
-
-  #backend "s3" {
-  #    bucket = "openstackbucket"
-  #    key = "instances-openstack-state/terraform.tfstate"
-  #    region = "us-east-1"
-  #    profile = "Terraform"  
-  #}
+  #  backend "s3" {
+  #      bucket = "openstackbucket"
+  #      key = "instances-openstack-state/terraform.tfstate"
+  #      region = "us-east-1"
+  #      profile = "Terraform"  
+  #  }
 }
 
 provider "aws" {

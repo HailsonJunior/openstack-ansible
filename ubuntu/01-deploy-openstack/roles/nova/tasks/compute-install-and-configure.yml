@@ -61,7 +61,7 @@
   tags: comment-vnc-section
 
 - name: Configure vnc section
-  shell: 'echo -e "\n[vnc]\nenabled = true\nserver_listen = 0.0.0.0\nserver_proxyclient_address = \$my_ip\nnovncproxy_base_url = http://{{ ip_controller }}:6080/vnc_auto.html\n" >> /etc/nova/nova.conf'
+  shell: 'echo -e "\n[vnc]\nenabled = true\nserver_listen = \$my_ip\nserver_proxyclient_address = \$my_ip\nnovncproxy_base_url = http://{{ ip_controller }}:6080/vnc_auto.html\n" >> /etc/nova/nova.conf'
   when: "'node2' in inventory_hostname"
   tags: conf-vnc-section
 

@@ -12,7 +12,7 @@ resource "aws_instance" "controller" {
         volume_type = var.block_type
         delete_on_termination = true
     }
-    
+
     tags = {
       Projeto = "OpenStack"
       Name = "Controller"
@@ -55,6 +55,13 @@ resource "aws_instance" "block" {
         delete_on_termination = true
     }
 
+    ebs_block_device {
+      device_name = "/dev/sdd"
+      volume_size = var.block_size_sdd
+      volume_type = var.block_type
+      delete_on_termination = true
+    }
+
     tags = {
       Projeto = "OpenStack"
       Name = "Block Storage"
@@ -74,6 +81,20 @@ resource "aws_instance" "object" {
         volume_size = var.block_size
         volume_type = var.block_type
         delete_on_termination = true
+    }
+
+    ebs_block_device {
+      device_name = "/dev/sdd"
+      volume_size = var.block_size_sdd
+      volume_type = var.block_type
+      delete_on_termination = true
+    }
+
+    ebs_block_device {
+      device_name = "/dev/sde"
+      volume_size = var.block_size_sdd
+      volume_type = var.block_type
+      delete_on_termination = true
     }
 
     tags = {

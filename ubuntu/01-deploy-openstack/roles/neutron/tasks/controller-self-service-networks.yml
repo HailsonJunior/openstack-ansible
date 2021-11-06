@@ -226,4 +226,13 @@
   when: "'node1' in inventory_hostname"
   tags: conf-dhcp-agent
 
+- name: Copy fwaas_driver.ini file
+  copy:
+    src: ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/fwaas_driver.ini
+    dest: /etc/neutron/fwaas_driver.ini
+    owner: root
+    group: neutron
+  when: "'node1' in inventory_hostname"
+  tags: copy-fwaas-driver.ini
+
 ...  
