@@ -1,5 +1,5 @@
 --- # https://docs.openstack.org/install-guide
-- name: Configure environment
+- name: Deploy OpenStack
   hosts: 'all'
   any_errors_fatal: true
   become: yes
