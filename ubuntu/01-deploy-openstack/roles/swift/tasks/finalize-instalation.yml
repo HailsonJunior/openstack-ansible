@@ -48,7 +48,7 @@
 
 - name: Copy internal-client.conf file
   copy:
-    src: ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/internal-client.conf
+    src: ~/openstack-ansible/ubuntu/01-deploy-openstack/files/internal-client.conf
     dest: /etc/swift/
     owner: root
     group: swift
@@ -57,7 +57,7 @@
 
 - name: Copy swift conf file to storage
   copy:
-    src: ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/swift.conf
+    src: ~/openstack-ansible/ubuntu/01-deploy-openstack/files/swift.conf
     dest: /etc/swift/swift.conf
   when: "'node4' in inventory_hostname"
   tags: copy-swift-conf

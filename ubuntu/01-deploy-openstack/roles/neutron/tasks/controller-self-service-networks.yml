@@ -228,7 +228,7 @@
 
 - name: Copy fwaas_driver.ini file
   copy:
-    src: ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/fwaas_driver.ini
+    src: ~/openstack-ansible/ubuntu/01-deploy-openstack/files/fwaas_driver.ini
     dest: /etc/neutron/fwaas_driver.ini
     owner: root
     group: neutron

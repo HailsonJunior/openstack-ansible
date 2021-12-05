@@ -77,7 +77,7 @@
 - name: Fetch files
   fetch:
     src: '{{item}}'
-    dest: ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/
+    dest: ~/openstack-ansible/ubuntu/01-deploy-openstack/files/
     flat: yes
   loop:
     - /etc/swift/account.ring.gz
@@ -91,9 +91,9 @@
     src: '{{item}}'
     dest: /etc/swift/
   loop:
-    - ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/account.ring.gz
-    - ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/container.ring.gz
-    - ~/OpenStack-Ansible-Prod/ubuntu/01-deploy-openstack/files/object.ring.gz
+    - ~/openstack-ansible/ubuntu/01-deploy-openstack/files/account.ring.gz
+    - ~/openstack-ansible/ubuntu/01-deploy-openstack/files/container.ring.gz
+    - ~/openstack-ansible/ubuntu/01-deploy-openstack/files/object.ring.gz
   when: "'node4' in inventory_hostname"
   tags: copy-files
 
