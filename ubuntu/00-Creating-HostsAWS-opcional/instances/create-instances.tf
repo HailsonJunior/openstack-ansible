@@ -1,6 +1,7 @@
 resource "aws_instance" "controller" {
   instance_type = "t2.xlarge"
   ami           = var.ami
+  user_data     = file("init-script.sh")
   key_name      = aws_key_pair.my-key.key_name
   network_interface {
     network_interface_id = aws_network_interface.network-controller.id
@@ -22,6 +23,7 @@ resource "aws_instance" "controller" {
 resource "aws_instance" "compute" {
   instance_type = "t2.xlarge"
   ami           = var.ami
+  user_data     = file("init-script.sh")
   key_name      = aws_key_pair.my-key.key_name
   network_interface {
     network_interface_id = aws_network_interface.network-compute.id
@@ -43,6 +45,7 @@ resource "aws_instance" "compute" {
 resource "aws_instance" "block" {
   instance_type = "t2.medium"
   ami           = var.ami
+  user_data     = file("init-script.sh")
   key_name      = aws_key_pair.my-key.key_name
   network_interface {
     network_interface_id = aws_network_interface.network-block.id
@@ -71,6 +74,7 @@ resource "aws_instance" "block" {
 resource "aws_instance" "object" {
   instance_type = "t2.medium"
   ami           = var.ami
+  user_data     = file("init-script.sh")
   key_name      = aws_key_pair.my-key.key_name
   network_interface {
     network_interface_id = aws_network_interface.network-object.id
