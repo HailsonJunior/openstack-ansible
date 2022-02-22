@@ -1,8 +1,9 @@
-resource "aws_instance" "controller" {
-  instance_type = "t2.xlarge"
+resource "aws_spot_instance_request" "controller" {
+  instance_type = "m4.large"
   ami           = var.ami
   user_data     = file("init-script.sh")
   key_name      = aws_key_pair.my-key.key_name
+  
   network_interface {
     network_interface_id = aws_network_interface.network-controller.id
     device_index         = 0
@@ -20,11 +21,12 @@ resource "aws_instance" "controller" {
   }
 }
 
-resource "aws_instance" "compute" {
-  instance_type = "t2.xlarge"
+resource "aws_spot_instance_request" "compute" {
+  instance_type = "c5.xlarge"
   ami           = var.ami
   user_data     = file("init-script.sh")
   key_name      = aws_key_pair.my-key.key_name
+  
   network_interface {
     network_interface_id = aws_network_interface.network-compute.id
     device_index         = 0
@@ -42,11 +44,12 @@ resource "aws_instance" "compute" {
   }
 }
 
-resource "aws_instance" "block" {
-  instance_type = "t2.medium"
+resource "aws_spot_instance_request" "block" {
+  instance_type = "c5.large"
   ami           = var.ami
   user_data     = file("init-script.sh")
   key_name      = aws_key_pair.my-key.key_name
+  
   network_interface {
     network_interface_id = aws_network_interface.network-block.id
     device_index         = 0
@@ -71,8 +74,8 @@ resource "aws_instance" "block" {
   }
 }
 
-resource "aws_instance" "object" {
-  instance_type = "t2.medium"
+resource "aws_spot_instance_request" "object" {
+  instance_type = "c5.large"
   ami           = var.ami
   user_data     = file("init-script.sh")
   key_name      = aws_key_pair.my-key.key_name

@@ -1,7 +1,7 @@
 variable "ami" {
   type        = string
   description = "AMI"
-  default     = "ami-09e67e426f25ce0d7"
+  default     = "ami-0fb653ca2d3203ac1"
 }
 
 variable "block_size" {
@@ -26,10 +26,4 @@ variable "block_type" {
   type        = string
   description = "Block type"
   default     = "gp2"
-}
-
-variable "subnetid" {
-  type        = string
-  description = "Subnet id"
-  default     = "subnet-3a5ad31b"
 }

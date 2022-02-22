@@ -1,4 +1,5 @@
 variable "aws_region" {
   type        = string
-  description = "Região do privider AWS"
+  description = "AWS region where the servers will run"
+  default = "us-east-2"
 }
