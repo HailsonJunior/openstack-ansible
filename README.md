@@ -231,4 +231,4 @@ ansible-playbook -v -i inventory.ini playbook-deploy.yml
 ````
 4. Access Openstack dashboard
 
-To access OpenStack open a browser and access ```INSTANCE_PUBLIC_IP/horizon``` address.
+To access OpenStack open a browser and access ```INSTANCE_PUBLIC_IP/horizon``` address. If you do not have change the variables you can login with ```admin``` user ```openstack``` password and ```default``` domain.
