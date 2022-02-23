@@ -13,11 +13,11 @@ METADATA_SECRET: openstack
 PROVIDER_INTERFACE_NAME: eth0
 
 # IP nodes
-ip_controller: 172.31.82.248
-ip_compute: 172.31.87.49
+ip_controller: 10.0.80.40
+ip_compute: 10.0.80.43
 
 # Network
-network: 172.31.0.0
+network: 10.0.0.0
 
 # VLAN_ID
 MIN_VLAN_ID: 1001

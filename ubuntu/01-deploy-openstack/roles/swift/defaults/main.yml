@@ -9,7 +9,7 @@ device1: xvdd
 device2: xvde
 
 # IPs Nodes
-ip_object: 172.31.82.229
+ip_object: 10.0.80.46
 
 # SWIFT URL
 SWIFT_URL: http://controller:8080/v1/

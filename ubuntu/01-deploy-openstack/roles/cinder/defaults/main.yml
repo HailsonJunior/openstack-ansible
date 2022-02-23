@@ -8,8 +8,8 @@ CINDER_PASS: openstack
 RABBIT_PASS: openstack
 
 # IPs nodes
-ip_controller: 172.31.82.248
-ip_block: 172.31.91.50
+ip_controller: 10.0.80.40
+ip_block: 10.0.80.44
 
 # Device /dev/xxx
 device: xvdd
