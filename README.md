@@ -13,7 +13,7 @@ Test environment
 
 On a Linux machine install [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli) and [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-ubuntu) (I recomend to use a t2.micro machine on AWS for execute Ansible playbooks more fast). On this machine you need to proceed with the following steps using a user called ```ubuntu```:
 
-1. Set AWS environment variables (or you can configure using [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html))
+1. Set your own AWS environment variables (or you can configure using [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html))
 
 ```sh
 export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
