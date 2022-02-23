@@ -36,7 +36,7 @@ terraform init
 
 terraform apply
 ```
-The resources will be created on AWS us-east-2 region.
+The resources will be created on AWS us-east-1 region.
 
 4. Exchange key using ssh command with all machines that has been created. If you have executed Terraform from a machine in a diferent network from the created machines, you need to ssh using public IP.
 
