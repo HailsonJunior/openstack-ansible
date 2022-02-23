@@ -21,9 +21,3 @@ variable "block_size_sde" {
   description = "EBS size sde"
   default     = 30
 }
-
-variable "block_type" {
-  type        = string
-  description = "Block type"
-  default     = "gp2"
-}

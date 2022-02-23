@@ -10,7 +10,7 @@ resource "aws_subnet" "openstack-subnet" {
 }
 
 resource "aws_security_group" "openstack-sg" {
-  name = "openstack-sg"
+  name   = "openstack-sg"
   vpc_id = aws_vpc.openstack-vpc.id
 
   ingress {
