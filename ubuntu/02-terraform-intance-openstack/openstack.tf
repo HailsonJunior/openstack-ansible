@@ -20,11 +20,11 @@ provider "openstack" {
 # Create a server
 resource "openstack_compute_instance_v2" "test-server" {
   name      = "instance-terraform"
-  image_id  = "527bcb67-a50d-4736-bad4-3194def078cb"
-  flavor_id = "1"
+  image_id  = "968bf1bc-6466-493c-8e8a-c6b3c0200768"
+  flavor_id = "0"
   key_pair  = "mykey"
   network {
-    uuid = "f189d523-ae5c-490a-82dc-adb336c3a208"
-    name = "private-network"
+    uuid = "b63bba2e-f184-4fc5-a088-53268cef7b79"
+    name = "my-network"
   }
 }
