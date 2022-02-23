@@ -5,11 +5,11 @@ HASH_PATH_SUFFIX: openstack
 HASH_PATH_PREFIX: openstack
 
 # devices
-device1: nvme1n1
-device2: nvme2n1
+device1: xvdd
+device2: xvde
 
 # IPs Nodes
-ip_object: 10.0.80.46
+ip_object: 172.31.82.229
 
 # SWIFT URL
 SWIFT_URL: http://controller:8080/v1/

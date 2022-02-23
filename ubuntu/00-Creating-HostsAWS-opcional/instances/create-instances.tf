@@ -1,10 +1,8 @@
-resource "aws_spot_instance_request" "controller" {
-  instance_type        = "c5.xlarge"
-  ami                  = var.ami
-  user_data            = file("init-script.sh")
-  key_name             = aws_key_pair.my-key.key_name
-  wait_for_fulfillment = true
-
+resource "aws_instance" "controller" {
+  instance_type = "t2.xlarge"
+  ami           = var.ami
+  user_data     = file("init-script.sh")
+  key_name      = aws_key_pair.my-key.key_name
   network_interface {
     network_interface_id = aws_network_interface.network-controller.id
     device_index         = 0
@@ -12,6 +10,7 @@ resource "aws_spot_instance_request" "controller" {
 
   root_block_device {
     volume_size           = var.block_size
+    volume_type           = var.block_type
     delete_on_termination = true
   }
 
@@ -21,13 +20,11 @@ resource "aws_spot_instance_request" "controller" {
   }
 }
 
-resource "aws_spot_instance_request" "compute" {
-  instance_type        = "c5.xlarge"
-  ami                  = var.ami
-  user_data            = file("init-script.sh")
-  key_name             = aws_key_pair.my-key.key_name
-  wait_for_fulfillment = true
-
+resource "aws_instance" "compute" {
+  instance_type = "t2.xlarge"
+  ami           = var.ami
+  user_data     = file("init-script.sh")
+  key_name      = aws_key_pair.my-key.key_name
   network_interface {
     network_interface_id = aws_network_interface.network-compute.id
     device_index         = 0
@@ -35,6 +32,7 @@ resource "aws_spot_instance_request" "compute" {
 
   root_block_device {
     volume_size           = var.block_size
+    volume_type           = var.block_type
     delete_on_termination = true
   }
 
@@ -44,13 +42,11 @@ resource "aws_spot_instance_request" "compute" {
   }
 }
 
-resource "aws_spot_instance_request" "block" {
-  instance_type        = "c5.large"
-  ami                  = var.ami
-  user_data            = file("init-script.sh")
-  key_name             = aws_key_pair.my-key.key_name
-  wait_for_fulfillment = true
-
+resource "aws_instance" "block" {
+  instance_type = "t2.medium"
+  ami           = var.ami
+  user_data     = file("init-script.sh")
+  key_name      = aws_key_pair.my-key.key_name
   network_interface {
     network_interface_id = aws_network_interface.network-block.id
     device_index         = 0
@@ -58,12 +54,14 @@ resource "aws_spot_instance_request" "block" {
 
   root_block_device {
     volume_size           = var.block_size
+    volume_type           = var.block_type
     delete_on_termination = true
   }
 
   ebs_block_device {
     device_name           = "/dev/sdd"
     volume_size           = var.block_size_sdd
+    volume_type           = var.block_type
     delete_on_termination = true
   }
 
@@ -73,13 +71,11 @@ resource "aws_spot_instance_request" "block" {
   }
 }
 
-resource "aws_spot_instance_request" "object" {
-  instance_type        = "c5.large"
-  ami                  = var.ami
-  user_data            = file("init-script.sh")
-  key_name             = aws_key_pair.my-key.key_name
-  wait_for_fulfillment = true
-
+resource "aws_instance" "object" {
+  instance_type = "t2.medium"
+  ami           = var.ami
+  user_data     = file("init-script.sh")
+  key_name      = aws_key_pair.my-key.key_name
   network_interface {
     network_interface_id = aws_network_interface.network-object.id
     device_index         = 0
@@ -87,18 +83,21 @@ resource "aws_spot_instance_request" "object" {
 
   root_block_device {
     volume_size           = var.block_size
+    volume_type           = var.block_type
     delete_on_termination = true
   }
 
   ebs_block_device {
     device_name           = "/dev/sdd"
     volume_size           = var.block_size_sdd
+    volume_type           = var.block_type
     delete_on_termination = true
   }
 
   ebs_block_device {
     device_name           = "/dev/sde"
     volume_size           = var.block_size_sdd
+    volume_type           = var.block_type
     delete_on_termination = true
   }
 
