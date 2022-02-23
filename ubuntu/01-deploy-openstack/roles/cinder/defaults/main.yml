@@ -12,4 +12,4 @@ ip_controller: 10.0.80.40
 ip_block: 10.0.80.44
 
 # Device /dev/xxx
-device: xvdd
+device: nvme1n1
