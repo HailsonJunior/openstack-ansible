@@ -19,7 +19,13 @@ On a Linux machine install [Terraform](https://learn.hashicorp.com/tutorials/ter
 export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 ```
-2. Init and execute Terraform apply
+2. Create an ssh key
+
+```bash
+ssh-keygen
+```
+
+3. Init and execute Terraform apply
 
 ```bash
 git clone https://github.com/HailsonJunior/openstack-ansible.git
