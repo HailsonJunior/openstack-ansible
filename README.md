@@ -50,7 +50,7 @@ ssh INTANCE_IP_04
 Deploy OpenStack
 ------------
 
-1. Acces deploy Ansible directory
+1. Acces deploy OpenStack directory
 
 ```bash
 cd ../01-deploy-openstack/
