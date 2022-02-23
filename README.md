@@ -38,7 +38,7 @@ terraform apply
 ```
 The resources will be created on AWS us-east-2 region.
 
-3. Exchange key using ssh command with all machines that has been created. If you have executed Terraform from a machine in a diferent network from the created machines, you need to ssh using public IP.
+4. Exchange key using ssh command with all machines that has been created. If you have executed Terraform from a machine in a diferent network from the created machines, you need to ssh using public IP.
 
 ```bash
 ssh INTANCE_IP_01
