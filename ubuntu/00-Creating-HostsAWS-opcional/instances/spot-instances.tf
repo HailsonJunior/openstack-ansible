@@ -1,5 +1,5 @@
 resource "aws_spot_instance_request" "controller" {
-  instance_type        = "m4.large"
+  instance_type        = "c5.xlarge"
   ami                  = var.ami
   user_data            = file("init-script.sh")
   key_name             = aws_key_pair.my-key.key_name
